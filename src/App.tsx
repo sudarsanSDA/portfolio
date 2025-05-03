@@ -13,8 +13,8 @@ import {
   Award,
   Cpu,
   Send,
-  Menu, // Import Menu icon for mobile nav
-  X,    // Import X icon for closing mobile nav
+  Menu, // Added for hamburger icon
+  X,    // Added for close icon
   // Technical skill icons
   Figma,
   FileCode2,
@@ -52,56 +52,69 @@ function App() {
   useEffect(() => {
     const updateScroll = () => {
       if (headerRef.current) {
-        setIsScrolled(window.scrollY > headerRef.current.offsetHeight - 100);
+        // Adjust threshold slightly if needed
+        setIsScrolled(window.scrollY > headerRef.current.offsetHeight - 60);
+      } else {
+         // Fallback if headerRef isn't set yet
+         setIsScrolled(window.scrollY > 50);
       }
     };
     window.addEventListener('scroll', updateScroll);
+    updateScroll(); // Initial check
     return () => window.removeEventListener('scroll', updateScroll);
   }, []);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) { // md breakpoint
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
 
   return (
-    <div className={`min-h-screen bg-white text-gray-900`}>
+    // Always light theme
+    <div className={`min-h-screen bg-white text-gray-900 transition-colors duration-500`}>
 
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-500 ${isScrolled
-        ? 'bg-white/80 backdrop-blur-xl shadow-sm'
-        : 'bg-transparent'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled || isMobileMenuOpen // Keep background when mobile menu is open too
+          ? 'bg-white/90 backdrop-blur-lg shadow-sm'
+          : 'bg-transparent'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo/Brand Name */}
-            <motion.span
+            {/* Logo/Name */}
+            <motion.a // Changed to <a> for potential navigation later
+              href="#top" // Link to top of page
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`text-xl font-bold text-gray-900`}
+              className="text-xl font-bold text-gray-900"
+              onClick={() => setIsMobileMenuOpen(false)} // Close menu if logo is clicked
             >
               SDA
-            </motion.span>
+            </motion.a>
 
             {/* Desktop Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
-              <NavLink href="#about" onClick={closeMobileMenu}>About</NavLink>
-              <NavLink href="#skills" onClick={closeMobileMenu}>Skills</NavLink>
-              <NavLink href="#projects" onClick={closeMobileMenu}>Projects</NavLink>
-              <NavLink href="#achievements" onClick={closeMobileMenu}>Achievements</NavLink>
-              <NavLink href="#contact" onClick={closeMobileMenu}>Contact</NavLink>
+              <NavLink href="#about">About</NavLink>
+              <NavLink href="#skills">Skills</NavLink>
+              <NavLink href="#projects">Projects</NavLink>
+              <NavLink href="#achievements">Achievements</NavLink>
+              <NavLink href="#contact">Contact</NavLink>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center">
               <button
-                onClick={toggleMobileMenu}
-                className="p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-                aria-label="Toggle mobile menu"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 inline-flex items-center justify-center rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
                 aria-expanded={isMobileMenuOpen}
+                aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -109,7 +122,7 @@ function App() {
           </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu Panel */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -117,14 +130,15 @@ function App() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden bg-white shadow-lg absolute w-full"
+              className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 z-40 overflow-hidden"
             >
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <NavLink href="#about" isMobile onClick={closeMobileMenu}>About</NavLink>
-                <NavLink href="#skills" isMobile onClick={closeMobileMenu}>Skills</NavLink>
-                <NavLink href="#projects" isMobile onClick={closeMobileMenu}>Projects</NavLink>
-                <NavLink href="#achievements" isMobile onClick={closeMobileMenu}>Achievements</NavLink>
-                <NavLink href="#contact" isMobile onClick={closeMobileMenu}>Contact</NavLink>
+              <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                 {/* Add onClick to close menu */}
+                <NavLink href="#about" isMobile onClick={() => setIsMobileMenuOpen(false)}>About</NavLink>
+                <NavLink href="#skills" isMobile onClick={() => setIsMobileMenuOpen(false)}>Skills</NavLink>
+                <NavLink href="#projects" isMobile onClick={() => setIsMobileMenuOpen(false)}>Projects</NavLink>
+                <NavLink href="#achievements" isMobile onClick={() => setIsMobileMenuOpen(false)}>Achievements</NavLink>
+                <NavLink href="#contact" isMobile onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
               </div>
             </motion.div>
           )}
@@ -133,17 +147,18 @@ function App() {
 
       {/* Hero Section */}
       <header ref={headerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className={`absolute inset-0 bg-gradient-to-b from-blue-100/50 to-purple-100/50`}></div>
+        {/* Light theme gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-100/50 to-purple-100/50"></div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
           className="text-center z-10 px-4"
         >
-          <h1 className={`text-7xl md:text-9xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900`}>
+          <h1 className="text-7xl md:text-9xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900">
             P Sudarsan
           </h1>
-          <p className={`text-2xl md:text-3xl text-gray-600 mb-12 tracking-wide`}>
+          <p className="text-2xl md:text-3xl text-gray-600 mb-12 tracking-wide">
             Turning ideas into elegant code & seamless experiences.
           </p>
         </motion.div>
@@ -156,35 +171,39 @@ function App() {
         </motion.div>
       </header>
 
-      {/* About Section Placeholder (Add content here if needed) */}
-       <section id="about" className={`py-32 bg-white text-gray-900`}>
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-           <SectionTitle icon={<User />} title="About Me" />
-           <motion.p
-             initial={{ opacity: 0 }}
-             whileInView={{ opacity: 1 }}
-             viewport={{ once: true }}
-             transition={{ duration: 0.8, delay: 0.2 }}
-             className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed"
-           >
-             Highly motivated and detail-oriented B.Tech student specializing in Computer Science & Engineering with a passion for developing innovative solutions. Proficient in diverse areas including AI/ML, cybersecurity, mobile app development (Flutter, Android), and web technologies. Proven ability to tackle complex problems, automate tasks, and contribute effectively to team projects. Eager to apply my skills and continuously learn in a challenging and dynamic environment.
-           </motion.p>
-             <div className="mt-12 flex justify-center space-x-6">
-                <FooterLink href="https://github.com/sudarsanSDA" icon={<Github size={28} />} />
-                <FooterLink href="https://linkedin.com/in/sudarsan-p-78390725a" icon={<Linkedin size={28} />} />
-                <FooterLink href="mailto:sudarsanjcr@gmail.com" icon={<Mail size={28} />} />
-             </div>
-         </div>
-       </section>
+      {/* --- About Section --- */}
+      <section id="about" className="py-32 bg-white text-gray-900">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <SectionTitle icon={<User />} title="About Me" />
+              <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="prose prose-lg lg:prose-xl max-w-4xl mx-auto text-gray-700"
+              >
+                  <p>
+                      Hello! I'm P Sudarsan, a passionate developer currently pursuing a B.Tech in Artificial Intelligence & Data Science. I thrive on transforming complex ideas into practical, elegant solutions through code. My journey in tech has equipped me with a diverse skill set, spanning from mobile development with Flutter and Android (Kotlin) to backend logic with Python and PHP.
+                  </p>
+                  <p>
+                      I have a keen interest in the cutting edge of technology, particularly in AI and Neural Networks, where I enjoy building models like handwriting recognition systems and NLP tools for hate speech detection. My curiosity also extends to cybersecurity, exploring tools like Kali Linux and techniques like password cracking to understand system vulnerabilities better.
+                  </p>
+                  <p>
+                      Beyond software, I'm comfortable with hardware management and OS installations, giving me a holistic view of computing systems. I'm a strong believer in continuous learning, as demonstrated by my NPTEL Star recognition and certifications from Harvard's CS50 and Google AI. My goal is to leverage technology to create seamless, impactful user experiences and solve real-world problems. Let's build something amazing together!
+                  </p>
+              </motion.div>
+          </div>
+      </section>
+
 
       {/* Skills Section */}
-      <section id="skills" className={`py-32 bg-gray-100 text-gray-900`}>
+      <section id="skills" className="py-32 bg-gray-50 text-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle icon={<Cpu />} title="Technical Skills" />
 
           {/* Programming & Development */}
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mb-6">Programming & Development</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mb-6 text-gray-800">Programming & Development</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
             <SkillIcon icon={<FileCode2 size={32} />} name="Flutter & Dart" />
             <SkillIcon icon={<ArrowDownWideNarrow size={32} />} name="Android (Kotlin)" />
             <SkillIcon icon={<Layers size={32} />} name="Python" />
@@ -193,15 +212,14 @@ function App() {
           </div>
 
           {/* AI & Neural Networks */}
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6">AI & Neural Networks</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">AI & Neural Networks</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
             <SkillIcon icon={<Brain size={32} />} name="Neural Networking (Intermediate)" />
-            <SkillIcon icon={<Brain size={32} />} name="Machine Learning" />
           </div>
 
           {/* Cybersecurity & Ethical Hacking */}
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6">Cybersecurity & Ethical Hacking</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Cybersecurity & Ethical Hacking</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
             <SkillIcon icon={<Shield size={32} />} name="Kali Linux" />
             <SkillIcon icon={<HashIcon size={32} />} name="John the Ripper" />
             <SkillIcon icon={<Terminal size={32} />} name="Termux" />
@@ -210,212 +228,192 @@ function App() {
           </div>
 
           {/* Hardware & OS Management */}
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6">Hardware & OS Management</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Hardware & OS Management</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
             <SkillIcon icon={<HardDrive size={32} />} name="Hardware Management" />
             <SkillIcon icon={<Server size={32} />} name="OS Installations" />
           </div>
 
           {/* Other Technical Skills */}
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6">Other Technical Skills</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
+          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Other Technical Skills</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             <SkillIcon icon={<GitBranch size={32} />} name="Git & GitHub" />
             <SkillIcon icon={<Database size={32} />} name="File Automation (Python)" />
-            <SkillIcon icon={<Bug size={32} />} name="Problem Diagnosis" />
+            <SkillIcon icon={<Bug size={32} />} name="Extreme Problem Diagnosis" />
           </div>
         </div>
       </section>
 
-
       {/* Projects Section */}
-      <section id="projects" className={`py-32 bg-gray-50`}>
+      <section id="projects" className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle icon={<Code2 />} title="Projects" />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            {/* Hate Speech Detection using NLP */}
-            <PopupProjectCard
-              title="Hate Speech Detection using NLP"
-              description="AI system identifying harmful language in text for safer online interactions."
-              image="https://source.unsplash.com/600x400/?ai,security"
-              tags={['Python', 'NLP', 'Machine Learning']}
-              details={{
-                challenge: "Ensuring online safety by detecting hate speech in text data.",
-                solution: "Used NLP techniques and machine learning models to classify and filter harmful content.",
-                results: "Achieved high accuracy in identifying hate speech, contributing to reduced toxic content.",
-                images: [
-                  "https://source.unsplash.com/600x400/?text-analysis,ai",
-                  "https://source.unsplash.com/600x400/?cybersecurity,nlp"
-                ]
-              }}
-              link="https://github.com/sudarsan2004/Hatespeech_detection_NLP" // Optional link
+             {/* Add your PopupProjectCard components here, removing the isDark prop */}
+             <PopupProjectCard
+                title="Hate Speech Detection using NLP"
+                description="An AI-powered system that identifies and filters harmful language in text, ensuring safer online interactions."
+                image="https://source.unsplash.com/600x400/?ai,security"
+                tags={['Python', 'NLP', 'ML']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Ensuring online safety by detecting hate speech in text data.",
+                    solution: "Used NLP techniques and machine learning models to classify and filter harmful content.",
+                    results: "Achieved high accuracy in identifying hate speech, reducing toxic content.",
+                    images: [
+                        "https://source.unsplash.com/600x400/?text-analysis,ai",
+                        "https://source.unsplash.com/600x400/?cybersecurity,nlp"
+                    ]
+                }}
             />
-
-            {/* Handwriting Recognition System */}
-            <PopupProjectCard
-              title="Handwriting Recognition System"
-              description="AI model that recognizes and digitizes handwritten text for document automation."
-              image="https://source.unsplash.com/600x400/?handwriting,ai"
-              tags={['Python', 'Neural Networks', 'AI']}
-              details={{
-                challenge: "Automating the recognition and digitization of handwritten documents.",
-                solution: "Developed a neural network-based model for efficient text recognition.",
-                results: "Successfully built a neural network capable of accurately converting handwritten text to digital format.",
-                images: [
-                  "https://source.unsplash.com/600x400/?notebook,writing",
-                  "https://source.unsplash.com/600x400/?machine-learning,handwriting"
-                ]
-              }}
-              // link="YOUR_PROJECT_LINK_HERE" // Optional link
+             <PopupProjectCard
+                title="Handwriting Recognition System"
+                description="An AI-powered model that recognizes and digitizes handwritten text, useful for document automation."
+                image="https://source.unsplash.com/600x400/?handwriting,ai"
+                tags={['Python', 'Neural Networks']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Automating the recognition and digitization of handwritten documents.",
+                    solution: "Developed a neural network-based model for efficient text recognition.",
+                    results: "Successfully built a neural network that can accurately recognize and convert handwritten text.",
+                    images: [
+                    "https://source.unsplash.com/600x400/?notebook,writing",
+                    "https://source.unsplash.com/600x400/?machine-learning,handwriting"
+                    ]
+                }}
             />
-
-
-            {/* Brute-Force ZIP Password Cracker */}
-            <PopupProjectCard
-              title="Brute-Force ZIP Password Cracker"
-              description="Python script to crack ZIP passwords using brute-force with GPU acceleration."
-              image="https://source.unsplash.com/600x400/?hacking,security"
-              tags={['Python', 'Cybersecurity', 'Brute-force']}
-              details={{
-                challenge: "Recovering lost ZIP passwords efficiently, leveraging GPU power.",
-                solution: "Implemented a custom brute-force algorithm optimized for GPU usage.",
-                results: "Significantly reduced the time required to crack passwords compared to CPU-only methods.",
-                images: [
-                  "https://source.unsplash.com/600x400/?zip,cracking",
-                  "https://source.unsplash.com/600x400/?cybersecurity,attack"
-                ]
-              }}
-             link="https://github.com/sudarsan2004/ZipPasswordBruteForcer" // Optional link
+             <PopupProjectCard
+                title="Brute-Force ZIP Password Cracker"
+                description="A Python script to crack ZIP file passwords using brute-force techniques with GPU acceleration."
+                image="https://source.unsplash.com/600x400/?hacking,security"
+                tags={['Python', 'Cybersecurity']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Recovering lost ZIP passwords efficiently relying on GPUs.",
+                    solution: "Implemented a custom brute-force algorithm optimized for GPU usage.",
+                    results: "Successfully cracked passwords within a small timeframe.",
+                    images: [
+                    "https://source.unsplash.com/600x400/?zip,cracking",
+                    "https://source.unsplash.com/600x400/?cybersecurity,attack"
+                    ]
+                }}
             />
-
-            {/* DoubtTopia (Flutter Version) */}
-            <PopupProjectCard
-              title="DoubtTopia (Flutter Version)"
-              description="Real-time doubt resolution platform with live content updates via Firebase."
-              image="https://source.unsplash.com/600x400/?learning,technology"
-              tags={['Flutter', 'Dart', 'Firebase', 'Mobile App']}
-              details={{
-                challenge: "Providing a real-time, scalable platform for students and educators to interact.",
-                solution: "Developed a dynamic content display system using Firebase Realtime Database and Flutter for cross-platform deployment.",
-                results: "Enabled live updates and interactive doubt resolution, improving user engagement and knowledge sharing.",
-                images: [
-                  "https://source.unsplash.com/600x400/?education,app",
-                  "https://source.unsplash.com/600x400/?students,discussion"
-                ]
-              }}
-             link="https://github.com/sudarsan2004/DoubtTopia" // Optional link
+             <PopupProjectCard
+                title="DoubtTopia (Flutter Version)"
+                description="A real-time doubt resolution platform with live content updates and resource management."
+                image="https://source.unsplash.com/600x400/?learning,technology"
+                tags={['Flutter', 'Dart', 'Firebase']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Providing a real-time, scalable platform for students and educators.",
+                    solution: "Developed a dynamic content display system using Firebase and Flutter.",
+                    results: "Enabled live updates and interactive doubt resolution, improving engagement.",
+                    images: [
+                    "https://source.unsplash.com/600x400/?education,app",
+                    "https://source.unsplash.com/600x400/?students,discussion"
+                    ]
+                }}
             />
-
-            {/* DoubtTopia (Android Studio Version) */}
-            <PopupProjectCard
-              title="DoubtTopia (Android Native Version)"
-              description="Android app (Java/Kotlin) for managing doubts and accessing categorized study materials."
-              image="https://source.unsplash.com/600x400/?education,discussion"
-              tags={['Android', 'Java', 'Kotlin', 'Firebase']}
-              details={{
-                challenge: "Creating a collaborative platform for students to resolve doubts and access resources.",
-                solution: "Built an intuitive Android app organizing PDFs by semester/subject via Firebase.",
-                results: "Provided students structured access to study materials, enhancing collaboration.",
-                images: [
-                  "https://source.unsplash.com/600x400/?students,learning",
-                  "https://source.unsplash.com/600x400/?pdf,documents"
-                ]
-              }}
-             // link="YOUR_PROJECT_LINK_HERE" // Optional link
+             <PopupProjectCard
+                title="DoubtTopia (Android Studio Version)"
+                description="An Android app for managing doubts, featuring document uploads and discussions."
+                image="https://source.unsplash.com/600x400/?education,discussion"
+                tags={['Android', 'Java/Kotlin', 'Firebase']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Creating a collaborative platform for students to resolve doubts.",
+                    solution: "Built an intuitive Android app that categorizes PDFs by semester/subject.",
+                    results: "Provided structured access to study materials, improving collaboration.",
+                    images: [
+                    "https://source.unsplash.com/600x400/?students,learning",
+                    "https://source.unsplash.com/600x400/?pdf,documents"
+                    ]
+                }}
             />
-
-
-            {/* Automated Image Downloader & Excel Updater */}
-            <PopupProjectCard
-              title="Automated Image Downloader & Excel Updater"
-              description="Python script automating bulk image downloads and updating Excel paths."
-              image="https://source.unsplash.com/600x400/?automation,data"
-              tags={['Python', 'Automation', 'Excel', 'Data Processing']}
-              details={{
-                challenge: "Managing large-scale image downloads and organizing paths in Excel.",
-                solution: "Developed an automated Python script to download images from URLs and update Excel.",
-                results: "Successfully downloaded 13,000+ images efficiently, saving significant manual effort.",
-                images: [
-                  "https://source.unsplash.com/600x400/?code,automation",
-                  "https://source.unsplash.com/600x400/?excel,data"
-                ]
-              }}
-             // link="YOUR_PROJECT_LINK_HERE" // Optional link
+             <PopupProjectCard
+                title="Automated Image Downloader & Excel Updater"
+                description="Python script for bulk image downloads and Excel path updates for data management."
+                image="https://source.unsplash.com/600x400/?automation,data"
+                tags={['Python', 'Automation', 'Excel']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Managing large-scale image downloads and organization in Excel.",
+                    solution: "Developed an automated Python script to download images and update paths.",
+                    results: "Downloaded 13,000+ images efficiently, ensuring accurate data handling.",
+                    images: [
+                    "https://source.unsplash.com/600x400/?code,automation",
+                    "https://source.unsplash.com/600x400/?excel,data"
+                    ]
+                }}
             />
-
-
-            {/* Tic-Tac-Toe AI */}
-            <PopupProjectCard
-              title="Tic-Tac-Toe AI (Reinforcement Learning)"
-              description="RL model playing Tic-Tac-Toe, visualizing Q-table updates during learning."
-              image="https://source.unsplash.com/600x400/?ai,games"
-              tags={['Python', 'Reinforcement Learning', 'AI', 'Q-Learning']}
-              details={{
-                challenge: "Developing an AI that learns and improves its Tic-Tac-Toe strategy through play.",
-                solution: "Used Q-learning to train an agent that adapts based on game outcomes.",
-                results: "Successfully demonstrated reinforcement learning principles in a classic game context.",
-                images: [
-                  "https://source.unsplash.com/600x400/?tic-tac-toe,ai",
-                  "https://source.unsplash.com/600x400/?q-learning,games"
-                ]
-              }}
-             // link="YOUR_PROJECT_LINK_HERE" // Optional link
+             <PopupProjectCard
+                title="Tic-Tac-Toe AI"
+                description="Reinforcement learning AI model for Tic-Tac-Toe, showing Q-table updates."
+                image="https://source.unsplash.com/600x400/?ai,games"
+                tags={['Python', 'RL', 'AI']}
+                link="" // Add link if available
+                details={{
+                    challenge: "Developing an AI that learns and improves its gameplay strategy.",
+                    solution: "Used Q-learning to train an AI that adapts to player moves.",
+                    results: "Successfully demonstrated reinforcement learning principles.",
+                    images: [
+                    "https://source.unsplash.com/600x400/?tic-tac-toe,ai",
+                    "https://source.unsplash.com/600x400/?q-learning,games"
+                    ]
+                }}
             />
-
           </div>
         </div>
       </section>
 
-
       {/* Achievements Section */}
-      <section id="achievements" className={`py-32 bg-white`}>
+      <section id="achievements" className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle icon={<Award />} title="Achievements & Certifications" />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Add AchievementCard components here, removing the isDark prop */}
             <AchievementCard
-              title="NPTEL Star"
-              image="assets/NPTEL_BELIEVERS.png" // Ensure this path is correct relative to public folder or imported
-              date="2024"
-              description="Recognition for outstanding performance in NPTEL online courses."
+                title="NPTEL Star"
+                image="assets\NPTEL_BELIEVERS.png" // Make sure path is correct relative to public folder or import
+                date="2024"
+                description="Recognition for outstanding performance in NPTEL courses."
             />
             <AchievementCard
-              title="Harvard’s CS50x Certificate"
-              image="assets/CS50python.png" // Ensure path is correct
-              date="2024"
-              description="Completed Harvard's renowned introduction to computer science course."
+                title="Harvard’s CS50 Certificate"
+                image="assets\CS50python.png" // Make sure path is correct
+                date="2024"
+                description="Earned certification demonstrating expertise in Python, problem-solving, and algorithms."
             />
             <AchievementCard
-              title="Machine Learning at the Edge"
-              image="assets/MachineLearningEdge.png" // Ensure path is correct
-              date="2024"
-              description="Gained experience deploying AI models on edge devices, focusing on optimization."
+                title="Machine Learning at the Edge"
+                image="assets\MachineLearningEdge.png" // Make sure path is correct
+                date="2024"
+                description="Gained experience deploying AI models on edge devices, focusing on efficiency and optimization."
+            />
+             <AchievementCard
+                title="Java Programming Basic Skills"
+                image="assets\JavaProgrammingBasicSkills.png" // Make sure path is correct
+                date="2024"
+                description="Learned core Java concepts and object-oriented programming."
             />
             <AchievementCard
-              title="Java Programming Basic Skills"
-              image="assets/JavaProgrammingBasicSkills.png" // Ensure path is correct
-              date="2024"
-              description="Certified proficiency in core Java concepts and object-oriented programming."
+                title="Introduction to Cloud Computing"
+                image="assets\CloudComputing.png" // Make sure path is correct
+                date="2024"
+                description="Acquired foundational knowledge in cloud architecture, deployment models, and services."
             />
             <AchievementCard
-              title="Introduction to Cloud Computing"
-              image="assets/CloudComputing.png" // Ensure path is correct
-              date="2024"
-              description="Acquired foundational knowledge in cloud architecture, models, and services."
+                title="Google AI for Anyone"
+                image="assets\GoogleAI.png" // Make sure path is correct
+                date="2024"
+                description="Completed Google's AI fundamentals course on AI concepts, ML principles, and applications."
             />
-            <AchievementCard
-              title="Google AI for Anyone"
-              image="assets/GoogleAI.png" // Ensure path is correct
-              date="2024"
-              description="Completed Google's AI fundamentals course on concepts and applications."
-            />
-
           </div>
         </div>
       </section>
 
-
       {/* Contact Section */}
-      <section id="contact" className={`py-32 bg-gradient-to-b from-white to-gray-100`}>
+      <section id="contact" className="py-32 bg-gradient-to-b from-white to-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -423,65 +421,64 @@ function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className={`text-5xl font-bold mb-8 text-center text-gray-900`}>
-              Let's Connect
+            <h2 className="text-5xl font-bold mb-8 text-center text-gray-900">
+              Let's Create Something Amazing
             </h2>
-            <p className={`text-xl text-gray-600 mb-12 max-w-2xl mx-auto text-center`}>
-              Have a project idea or just want to chat? Feel free to reach out!
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto text-center">
+              Whether you have a project in mind or just want to chat, I'm always open to discussing new opportunities.
             </p>
 
             <div className="max-w-2xl mx-auto">
-              <div className={`p-8 rounded-2xl bg-white shadow-xl`}>
-                {/* Replace with your actual form or contact info */}
-                <form action="https://formspree.io/f/your_form_id" method="POST" className="space-y-6"> {/* Replace 'your_form_id' */}
-                   <div>
-                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                       Name
-                     </label>
-                     <input
-                       type="text"
-                       id="name"
-                       name="name" // Add name attribute for form submission
-                       required // Add required attribute
-                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                       placeholder="Your name"
-                     />
-                   </div>
-                   <div>
-                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                       Email
-                     </label>
-                     <input
-                       type="email"
-                       id="email"
-                       name="email" // Add name attribute
-                       required // Add required attribute
-                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                       placeholder="Your email"
-                     />
-                   </div>
-                   <div>
-                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                       Message
-                     </label>
-                     <textarea
-                       id="message"
-                       name="message" // Add name attribute
-                       rows={5}
-                       required // Add required attribute
-                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                       placeholder="Your message"
-                     ></textarea>
-                   </div>
-                   <motion.button
-                     whileHover={{ scale: 1.02 }}
-                     whileTap={{ scale: 0.98 }}
-                     className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                     type="submit" // Change type to submit
-                   >
-                     Send Message <Send size={18} />
-                   </motion.button>
-                 </form>
+              {/* Light theme form container */}
+              <div className="p-8 rounded-2xl bg-white shadow-xl">
+                <form className="space-y-6">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      placeholder="Your email"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                      Message
+                    </label>
+                    <textarea
+                      id="message"
+                      rows={5}
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                      placeholder="Your message"
+                    ></textarea>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02, filter: 'brightness(1.1)' }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300"
+                    type="button" // Change to type="submit" if you add form handling logic
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default form submission for now
+                      // Add your form submission logic here
+                      alert('Form submission not implemented yet.');
+                    }}
+                  >
+                    Send Message <Send size={18} />
+                  </motion.button>
+                </form>
               </div>
             </div>
           </motion.div>
@@ -489,20 +486,21 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className={`py-12 border-t border-gray-200`}>
+      <footer className="py-12 border-t border-gray-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className={`text-2xl font-bold mb-4 text-gray-900`}>P Sudarsan</h3>
-              <p className={'text-gray-600'}>Turning ideas into elegant code & seamless experiences.</p>
+              <h3 className="text-2xl font-bold mb-4 text-gray-900">P Sudarsan</h3>
+              <p className="text-gray-600">Turning ideas into elegant code & seamless experiences.</p>
             </div>
-            <div className="flex justify-center md:justify-end space-x-6">
-              <FooterLink href="https://github.com/sudarsansda" icon={<Github size={24} />} />
-              <FooterLink href="https://linkedin.com/in/sudarsan-p-78390725a" icon={<Linkedin size={24} />} />
-              <FooterLink href="mailto:sudarsanjcr@gmail.com" icon={<Mail size={24} />} />
+            <div className="flex justify-start md:justify-end space-x-6">
+              {/* Update links */}
+              <FooterLink href="https://github.com/your-github-username" icon={<Github size={24}/>} />
+              <FooterLink href="https://linkedin.com/in/your-linkedin-profile" icon={<Linkedin size={24}/>} />
+              <FooterLink href="mailto:your.email@example.com" icon={<Mail size={24}/>} />
             </div>
           </div>
-          <div className={`mt-12 pt-8 border-t border-gray-200 text-center text-gray-600`}>
+          <div className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-600">
             <p>© {new Date().getFullYear()} P Sudarsan. All rights reserved.</p>
           </div>
         </div>
@@ -511,57 +509,61 @@ function App() {
   );
 }
 
-// Updated NavLink to handle mobile styles and click handling
-function NavLink({ href, children, isMobile = false, onClick }: { href: string; children: React.ReactNode; isMobile?: boolean; onClick?: () => void; }) {
-  const mobileClasses = "block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50";
-  const desktopClasses = "text-gray-700 hover:text-gray-900 transition-colors";
+// Updated NavLink to handle mobile styling and onClick
+function NavLink({ href, children, isMobile = false, onClick }: { href: string; children: React.ReactNode; isMobile?: boolean; onClick?: () => void }) {
+  const mobileClasses = "block w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 text-left";
+  const desktopClasses = "text-gray-700 hover:text-gray-900 transition-colors px-1"; // Simplified desktop
 
   return (
     <motion.a
       href={href}
       className={isMobile ? mobileClasses : desktopClasses}
-      whileHover={{ scale: isMobile ? 1.0 : 1.05 }} // No scale hover on mobile links needed
+      whileHover={{ scale: isMobile ? 1 : 1.05 }} // No scale on mobile hover
       whileTap={{ scale: 0.95 }}
-      onClick={onClick} // Close mobile menu on click
+      onClick={onClick} // Execute onClick (e.g., close mobile menu)
     >
       {children}
     </motion.a>
   );
 }
 
-function FooterLink({ icon, href }: { icon: React.ReactNode; href: string; }) {
+// Updated FooterLink (removed isDark)
+function FooterLink({ icon, href }: { icon: React.ReactNode; href: string }) {
   return (
     <motion.a
-      whileHover={{ scale: 1.1, y: -2 }} // Add subtle lift on hover
+      whileHover={{ scale: 1.1, color: '#3B82F6' }} // Example hover color (blue-500)
       whileTap={{ scale: 0.95 }}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={'text-gray-600 hover:text-blue-600 transition-colors'} // Updated hover color
+      className="text-gray-600 hover:text-gray-900 transition-colors" // Default light theme colors
     >
       {icon}
     </motion.a>
   );
 }
 
-function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string; }) {
+// Updated SectionTitle (removed isDark)
+function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="flex items-center justify-center gap-4 mb-12 md:mb-16" // Centered title
+      className="flex items-center gap-4 mb-12 md:mb-16" // Increased bottom margin
     >
       {/* Gradient background for icon */}
-      <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-md text-white">
-        {React.cloneElement(icon as React.ReactElement, { size: 24 })}
+      <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl text-white shadow-md">
+        {/* Ensure icon itself is white or contrasts well */}
+        {React.cloneElement(icon as React.ReactElement, { size: 28, color: 'white' })}
       </div>
-      <h2 className={`text-4xl md:text-5xl font-bold text-gray-900`}>{title}</h2>
+      <h2 className="text-4xl md:text-5xl font-bold text-gray-900">{title}</h2>
     </motion.div>
   );
 }
 
+// --- PopupProjectCard Component (Updated) ---
 interface ProjectDetails {
   challenge: string;
   solution: string;
@@ -575,7 +577,7 @@ function PopupProjectCard({
   image,
   link, // Added link prop
   tags,
-  details
+  details,
 }: {
   title: string;
   description: string;
@@ -587,42 +589,41 @@ function PopupProjectCard({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <> {/* Use Fragment to handle overlay and card */}
+    <> {/* Use Fragment to handle overlay */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`group relative bg-white shadow-lg rounded-2xl overflow-hidden cursor-pointer transition-shadow duration-300 hover:shadow-xl`}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        layout // Enable layout animation
+        className="group relative bg-white shadow-lg rounded-2xl overflow-hidden cursor-pointer border border-gray-100 hover:shadow-xl transition-shadow duration-300"
         onClick={() => setIsExpanded(true)} // Expand on click
-        layout // Animate layout changes
       >
-        {/* Subtle gradient overlay on hover */}
-        {/* <div className={`absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div> */}
-
-        <div className="relative">
+        <motion.div layout="position" className="relative">
           <img src={image} alt={title} className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105" />
-          {/* Add a subtle inner shadow or overlay if needed */}
-           {/* <div className="absolute inset-0 bg-black/5"></div> */}
-        </div>
-        <div className="p-6">
-          <h3 className={`text-xl font-bold mb-2 text-gray-900`}>{title}</h3>
-          <p className={`text-gray-600 mb-4 text-sm line-clamp-3`}>{description}</p> {/* Use line-clamp */}
+           {/* Subtle gradient overlay on image hover */}
+           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </motion.div>
+
+        <motion.div layout="position" className="p-6">
+          <h3 className="text-xl font-bold mb-2 text-gray-900">{title}</h3>
+          <p className="text-gray-600 mb-4 text-sm line-clamp-2">{description}</p>
           <div className="flex flex-wrap gap-2 mb-4">
             {tags.map((tag, index) => (
-              <span key={index} className={`px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium`}>
+              <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                 {tag}
               </span>
             ))}
           </div>
-           {/* Keep the View Details indicator subtle */}
-           <div className="text-sm font-medium text-blue-600 group-hover:text-blue-700 transition-colors">
-             View Details ›
-           </div>
-        </div>
+          <motion.div
+             className="inline-flex items-center gap-1 text-sm text-blue-600 group-hover:text-blue-700 font-medium"
+          >
+            View Details <ExternalLink size={14} className="opacity-70 group-hover:opacity-100"/>
+          </motion.div>
+        </motion.div>
       </motion.div>
 
-      {/* Expanded View Modal */}
+      {/* Modal Popup Logic */}
       <AnimatePresence>
         {isExpanded && (
           <>
@@ -632,13 +633,12 @@ function PopupProjectCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/70 z-[90]" // Ensure overlay is below modal content
-              onClick={() => setIsExpanded(false)} // Close on overlay click
+              className="fixed inset-0 bg-black/70 z-[90]" // Ensure overlay is behind modal
+              onClick={() => setIsExpanded(false)}
             />
 
-            {/* Modal Content */}
+            {/* Expanded Card Modal */}
             <motion.div
-              key="expanded-content"
               layoutId={`project-card-${title}`} // Unique ID for layout animation
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{
@@ -647,68 +647,73 @@ function PopupProjectCard({
               }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-0 m-auto w-[90vw] max-w-4xl h-[85vh] max-h-[800px] z-[100] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+              className="fixed top-1/2 left-1/2 w-[90vw] max-w-4xl h-[85vh] max-h-[700px] -translate-x-1/2 -translate-y-1/2 z-[100] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
             >
-              {/* Header */}
-              <div className="flex justify-between items-center p-4 md:p-6 border-b border-gray-200 flex-shrink-0">
-                <h3 className={`text-2xl md:text-3xl font-bold text-gray-900`}>{title}</h3>
+              {/* Modal Header */}
+              <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900">{title}</h3>
                 <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileHover={{ scale: 1.1, rotate: 90, backgroundColor: '#f3f4f6' }} // bg-gray-100
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setIsExpanded(false)}
-                  className={`p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors`}
-                  aria-label="Close project details"
+                  className="p-2 rounded-full text-gray-500 hover:text-gray-800 transition-colors"
+                  aria-label="Close modal"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </motion.button>
               </div>
 
-              {/* Scrollable Content */}
-              <div className="p-4 md:p-6 overflow-y-auto flex-grow">
+              {/* Modal Content (Scrollable) */}
+              <div className="p-4 sm:p-6 overflow-y-auto flex-grow">
+                 {/* Image Gallery */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    {details.images.map((img, index) => (
+                        <img key={index} src={img} alt={`${title} screenshot ${index + 1}`} className="rounded-lg shadow-sm w-full h-48 object-cover border border-gray-200" />
+                    ))}
+                </div>
+
+                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {tags.map((tag, index) => (
-                    <span key={index} className={`px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium`}>
-                      {tag}
-                    </span>
+                     <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                         {tag}
+                     </span>
                   ))}
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-                  {details.images.map((img, index) => (
-                    <img key={index} src={img} alt={`${title} screenshot ${index + 1}`} className="rounded-lg shadow-md w-full h-auto object-contain max-h-64" />
-                  ))}
-                </div>
-
-                <div className="space-y-5 mb-8 text-gray-700 text-base leading-relaxed">
+                {/* Details Sections */}
+                <div className="space-y-5 mb-6 text-gray-700 text-base leading-relaxed">
                   <div>
-                    <h4 className={`text-lg font-semibold mb-1 text-blue-700`}>The Challenge</h4>
+                    <h4 className="text-lg font-semibold mb-1 text-blue-700">The Challenge</h4>
                     <p>{details.challenge}</p>
                   </div>
                   <div>
-                    <h4 className={`text-lg font-semibold mb-1 text-blue-700`}>The Solution</h4>
+                    <h4 className="text-lg font-semibold mb-1 text-blue-700">The Solution</h4>
                     <p>{details.solution}</p>
                   </div>
                   <div>
-                    <h4 className={`text-lg font-semibold mb-1 text-blue-700`}>The Results</h4>
+                    <h4 className="text-lg font-semibold mb-1 text-blue-700">The Results</h4>
                     <p>{details.results}</p>
                   </div>
                 </div>
-
-                {/* Optional Project Link Button */}
-                {link && (
-                  <motion.a
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors font-medium text-sm`}
-                  >
-                    Visit Project <ExternalLink size={16} />
-                  </motion.a>
-                )}
               </div>
+
+              {/* Modal Footer (Optional Link) */}
+              {link && (
+                  <div className="p-4 sm:p-6 border-t border-gray-200 flex-shrink-0 text-right">
+                      <motion.a
+                          whileHover={{ scale: 1.03, filter: 'brightness(1.1)' }}
+                          whileTap={{ scale: 0.97 }}
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors text-sm font-medium shadow-sm"
+                      >
+                          Visit Project <ExternalLink size={16} />
+                      </motion.a>
+                  </div>
+              )}
             </motion.div>
           </>
         )}
@@ -718,27 +723,29 @@ function PopupProjectCard({
 }
 
 
-function SkillIcon({ icon, name }: { icon: React.ReactNode; name: string; }) {
+// Updated SkillIcon (removed isDark)
+function SkillIcon({ icon, name }: { icon: React.ReactNode; name: string }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.05, y: -5 }} // Lift effect on hover
-      className={`flex flex-col items-center justify-center text-center p-4 md:p-6 bg-white hover:bg-blue-50/50 border border-gray-200/80 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md`}
+      whileHover={{ scale: 1.05, y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }} // Added shadow on hover
+      className="flex flex-col items-center justify-center p-4 sm:p-6 bg-white hover:bg-white rounded-xl transition-all duration-300 border border-gray-100 text-center shadow-sm hover:shadow-md"
     >
-      <div className={`mb-3 text-blue-600`}>
-        {/* Ensure icon has a fixed size */}
-        {React.cloneElement(icon as React.ReactElement, { size: 36 })}
+      {/* Icon color */}
+      <div className="mb-3 text-blue-600">
+        {icon}
       </div>
-      <span className={`text-sm md:text-base text-gray-700 font-medium`}>
+      <span className="text-sm sm:text-base text-gray-700 font-medium">
         {name}
       </span>
     </motion.div>
   );
 }
 
+// Updated AchievementCard (removed isDark)
 function AchievementCard({ title, image, date, description }: {
   title: string;
   image: string;
@@ -747,25 +754,27 @@ function AchievementCard({ title, image, date, description }: {
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`overflow-hidden rounded-xl bg-white shadow-lg group border border-gray-200/70 hover:shadow-xl transition-shadow duration-300`}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="overflow-hidden rounded-xl bg-white shadow-lg group border border-gray-100 hover:shadow-xl transition-shadow duration-300"
     >
       <div className="relative h-48 overflow-hidden">
-        {/* Image */}
-        <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" />
-        {/* Optional: Subtle gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
-        {/* Date Badge */}
+         {/* Image */}
+        <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+         {/* Date Badge */}
         <div className="absolute bottom-3 left-3 z-10">
-          <span className={`px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full shadow-sm`}>{date}</span>
+          <span className="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full shadow">
+              {date}
+          </span>
         </div>
       </div>
-      <div className="p-5 md:p-6">
-        <h3 className={`text-lg font-bold mb-2 text-gray-900`}>{title}</h3>
-        <p className={'text-gray-600 text-sm leading-relaxed'}>{description}</p>
+      <div className="p-5 sm:p-6">
+        <h3 className="text-lg font-bold mb-2 text-gray-900">{title}</h3>
+        <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
       </div>
     </motion.div>
   );
