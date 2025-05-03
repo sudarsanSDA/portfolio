@@ -362,7 +362,7 @@ function App() {
       />
       <AchievementCard
         title="Machine Learning at the Edge"
-        image="/assets/MachineLearningEdge.png"
+        image="personal_portfolio/assets/MachineLearningEdge.png"
         date="2024"
         description="Gained hands-on experience in deploying AI models on edge devices, focusing on efficiency, optimization, and real-world ML applications."
         isDark={isDark}
