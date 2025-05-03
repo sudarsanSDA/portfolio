@@ -348,42 +348,42 @@ function App() {
     <div className="grid md:grid-cols-3 gap-8">
       <AchievementCard
         title="NPTEL Star"  
-        image="public/assets/NPTEL_BELIEVERS.png"  
+        image="assets\NPTEL_BELIEVERS.png"  
         date="2024"  
         description="Recognition for outstanding performance in NPTEL courses."  
         isDark={isDark}
       />
       <AchievementCard
         title="Harvard’s CS50 Certificate"  
-        image="public/assets/CS50python.png"  
+        image="assets\CS50python.png"  
         date="2024"  
         description="Earned a prestigious certification from Harvard’s CS50 course, demonstrating expertise in Python programming, problem-solving, and algorithmic thinking."  
         isDark={isDark}
       />
       <AchievementCard
         title="Machine Learning at the Edge"
-        image="public/assets/MachineLearningEdge.png"
+        image="assets\MachineLearningEdge.jpg"
         date="2024"
         description="Gained hands-on experience in deploying AI models on edge devices, focusing on efficiency, optimization, and real-world ML applications."
         isDark={isDark}
       />
       <AchievementCard
         title="Java Programming Basic Skills"
-        image="public/assets/MachineLearningEdge.png"
+        image="assets\MachineLearningEdge.png"
         date="2024"
         description="Learned core Java concepts and object-oriented programming."
         isDark={isDark}
       />
       <AchievementCard
         title="Introduction to Cloud Computing"
-        image="public/assets/CloudComputing.png"
+        image="assets\CloudComputing.jpg"
         date="2024"
         description="Acquired foundational knowledge in cloud computing, including cloud architecture, deployment models, and major cloud service providers."
         isDark={isDark}
       />
       <AchievementCard
         title="Google AI for Anyone"
-        image="public/assets/GoogleAI.png"
+        image="assets\GoogleAI.jpg"
         date="2024"
         description="Completed Google's AI fundamentals course, gaining insights into artificial intelligence concepts, machine learning principles, and real-world AI applications."
         isDark={isDark}
