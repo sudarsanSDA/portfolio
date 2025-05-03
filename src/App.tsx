@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useScroll } from 'framer-motion';
 
+// Lucide Icons (ensure all used icons are here)
 import {
   Code2,
   User,
@@ -13,8 +14,8 @@ import {
   Award,
   Cpu,
   Send,
-  Menu, // Added for hamburger icon
-  X,    // Added for close icon
+  Menu, // Hamburger icon
+  X,    // Close icon
   // Technical skill icons
   Figma,
   FileCode2,
@@ -34,29 +35,32 @@ import {
   Bug,
   HardDrive,
   Wifi,
-  LucideWifiOff,
-  WifiOff,
+  LucideWifiOff, // Maybe remove if not used?
+  WifiOff,       // Maybe remove if not used?
   Key,
-  HashIcon,
-  Tablets,
-  Phone,
-  ArrowDownWideNarrow
-} from 'lucide-react';
+  Hash as HashIcon, // Renamed Hash to avoid conflict with JS Hash
+  Tablets,       // Maybe remove if not used?
+  Phone,         // Maybe remove if not used?
+  ArrowDownWideNarrow,
+  FacebookIcon
+} from 'lucide-react'; // Ensure 'Hash' is imported correctly if needed, maybe rename it
 
+// Main App Component
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
   const { scrollY } = useScroll();
   const headerRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null); // Ref for the nav bar
 
+  // Effect to handle header background on scroll
   useEffect(() => {
     const updateScroll = () => {
       if (headerRef.current) {
-        // Adjust threshold slightly if needed
-        setIsScrolled(window.scrollY > headerRef.current.offsetHeight - 60);
+        // Trigger change slightly before the section starts for better visual transition
+        setIsScrolled(window.scrollY > headerRef.current.offsetHeight - 80); // Adjust threshold if needed
       } else {
-         // Fallback if headerRef isn't set yet
-         setIsScrolled(window.scrollY > 50);
+        setIsScrolled(window.scrollY > 50); // Fallback
       }
     };
     window.addEventListener('scroll', updateScroll);
@@ -64,10 +68,10 @@ function App() {
     return () => window.removeEventListener('scroll', updateScroll);
   }, []);
 
-  // Close mobile menu on resize to desktop
+  // Effect to close mobile menu on resize to desktop view
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) { // md breakpoint
+      if (window.innerWidth >= 768) { // Tailwind 'md' breakpoint
         setIsMobileMenuOpen(false);
       }
     };
@@ -75,26 +79,81 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // --- FIX: Handle mobile navigation click ---
+  const handleMobileNavClick = (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // 1. Prevent the browser's default anchor link jump *immediately*.
+    //    This often helps avoid conflicts with state updates and animations.
+    event.preventDefault();
+
+    // 2. Close the menu *immediately* by updating the state.
+    //    This triggers React to re-render and Framer Motion to start the exit animation.
+    setIsMobileMenuOpen(false);
+
+    // 3. Check if it's a valid hash link (starts with # and has more characters).
+    if (href.startsWith('#') && href.length > 1) {
+        const targetId = href.substring(1); // Extract the ID (e.g., "skills")
+
+        // 4. Use setTimeout to delay the scroll action slightly.
+        //    This gives the browser time to process the state update and start
+        //    the menu closing animation before trying to scroll the page.
+        setTimeout(() => {
+            const targetElement = document.getElementById(targetId);
+
+            // 5. If the target element exists in the DOM...
+            if (targetElement) {
+                // Calculate the height of the fixed navigation bar.
+                // Use the ref if available, otherwise fallback to a sensible default (e.g., 64px for h-16).
+                const navHeight = navRef.current?.offsetHeight || 64;
+
+                // Define an extra pixel offset to add some padding above the scrolled section.
+                const extraOffset = 20; // Adjust this value as needed for visual spacing.
+
+                // Calculate the target scroll position:
+                // - Get the element's position relative to the viewport top.
+                // - Add the current vertical scroll position (window.pageYOffset).
+                // - Subtract the navigation bar height.
+                // - Subtract the extra offset padding.
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navHeight - extraOffset;
+
+                // 6. Perform the smooth scroll to the calculated position.
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth" // Use smooth scrolling animation.
+                });
+            } else {
+                // Log a warning if the target ID wasn't found, helps debugging.
+                console.warn(`[handleMobileNavClick] Target element with id "${targetId}" not found for smooth scroll.`);
+            }
+        }, 50); // Delay in milliseconds (50ms is usually short enough not to be noticed but allows state update).
+               // You might need to adjust this slightly (e.g., 100ms) depending on device/browser performance.
+    }
+    // Note: If the href was not a hash link (e.g., an external link), nothing
+    // further happens here because event.preventDefault() was called earlier.
+    // If you need non-hash links to work from the mobile menu, you'd adjust
+    // the logic to only call preventDefault for hash links.
+};
 
   return (
     // Always light theme
     <div className={`min-h-screen bg-white text-gray-900 transition-colors duration-500`}>
 
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen // Keep background when mobile menu is open too
-          ? 'bg-white/90 backdrop-blur-lg shadow-sm'
+      {/* Navigation -- Added ref={navRef} */}
+      <nav ref={navRef} className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled || isMobileMenuOpen // Keep background visible when mobile menu is open too
+          ? 'bg-white/90 backdrop-blur-lg shadow-md' // Enhanced shadow slightly
           : 'bg-transparent'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo/Name */}
-            <motion.a // Changed to <a> for potential navigation later
-              href="#top" // Link to top of page
+            <motion.a // Use anchor tag for navigation
+              href="#top" // Link to top (will be handled by handleMobileNavClick if needed on mobile)
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-xl font-bold text-gray-900"
-              onClick={() => setIsMobileMenuOpen(false)} // Close menu if logo is clicked
+              className="text-xl font-bold text-gray-900 cursor-pointer" // Added cursor-pointer
+              // Use the same handler for consistency on mobile if menu happens to be open
+              onClick={(e) => handleMobileNavClick(e, '#top')}
             >
               SDA
             </motion.a>
@@ -114,7 +173,7 @@ function App() {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 inline-flex items-center justify-center rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition"
                 aria-expanded={isMobileMenuOpen}
-                aria-label="Toggle menu"
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"} // Improved accessibility
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -130,23 +189,23 @@ function App() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 z-40 overflow-hidden"
+              className="md:hidden bg-white shadow-lg absolute top-full left-0 right-0 z-40 overflow-hidden border-t border-gray-200" // Added top border
             >
+              {/* Use handleMobileNavClick for each link */}
               <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3">
-                 {/* Add onClick to close menu */}
-                <NavLink href="#about" isMobile onClick={() => setIsMobileMenuOpen(false)}>About</NavLink>
-                <NavLink href="#skills" isMobile onClick={() => setIsMobileMenuOpen(false)}>Skills</NavLink>
-                <NavLink href="#projects" isMobile onClick={() => setIsMobileMenuOpen(false)}>Projects</NavLink>
-                <NavLink href="#achievements" isMobile onClick={() => setIsMobileMenuOpen(false)}>Achievements</NavLink>
-                <NavLink href="#contact" isMobile onClick={() => setIsMobileMenuOpen(false)}>Contact</NavLink>
+                <NavLink href="#about" isMobile onClick={(e) => handleMobileNavClick(e, '#about')}>About</NavLink>
+                <NavLink href="#skills" isMobile onClick={(e) => handleMobileNavClick(e, '#skills')}>Skills</NavLink>
+                <NavLink href="#projects" isMobile onClick={(e) => handleMobileNavClick(e, '#projects')}>Projects</NavLink>
+                <NavLink href="#achievements" isMobile onClick={(e) => handleMobileNavClick(e, '#achievements')}>Achievements</NavLink>
+                <NavLink href="#contact" isMobile onClick={(e) => handleMobileNavClick(e, '#contact')}>Contact</NavLink>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
 
-      {/* Hero Section */}
-      <header ref={headerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero Section -- Added id="top" for logo link */}
+      <header ref={headerRef} id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Light theme gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-100/50 to-purple-100/50"></div>
         <motion.div
@@ -164,7 +223,7 @@ function App() {
         </motion.div>
         <motion.div
           animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} // Smoother ease
           className="absolute bottom-8"
         >
           <ChevronDown size={32} className="text-gray-600" />
@@ -173,26 +232,26 @@ function App() {
 
       {/* --- About Section --- */}
       <section id="about" className="py-32 bg-white text-gray-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <SectionTitle icon={<User />} title="About Me" />
-              <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  className="prose prose-lg lg:prose-xl max-w-4xl mx-auto text-gray-700"
-              >
-                  <p>
-                      Hello! I'm P Sudarsan, a passionate developer currently pursuing a B.Tech in Artificial Intelligence & Data Science. I thrive on transforming complex ideas into practical, elegant solutions through code. My journey in tech has equipped me with a diverse skill set, spanning from mobile development with Flutter and Android (Kotlin) to backend logic with Python and PHP.
-                  </p>
-                  <p>
-                      I have a keen interest in the cutting edge of technology, particularly in AI and Neural Networks, where I enjoy building models like handwriting recognition systems and NLP tools for hate speech detection. My curiosity also extends to cybersecurity, exploring tools like Kali Linux and techniques like password cracking to understand system vulnerabilities better.
-                  </p>
-                  <p>
-                      Beyond software, I'm comfortable with hardware management and OS installations, giving me a holistic view of computing systems. I'm a strong believer in continuous learning, as demonstrated by my NPTEL Star recognition and certifications from Harvard's CS50 and Google AI. My goal is to leverage technology to create seamless, impactful user experiences and solve real-world problems. Let's build something amazing together!
-                  </p>
-              </motion.div>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SectionTitle icon={<User />} title="About Me" />
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="prose prose-lg lg:prose-xl max-w-4xl mx-auto text-gray-700" // Prose classes for better typography
+            >
+                <p>
+                    Hello! I'm P Sudarsan, a passionate developer currently pursuing a B.Tech in Artificial Intelligence & Data Science. I thrive on transforming complex ideas into practical, elegant solutions through code. My journey in tech has equipped me with a diverse skill set, spanning from mobile development with Flutter and Android (Kotlin) to backend logic with Python and PHP.
+                </p>
+                <p>
+                    I have a keen interest in the cutting edge of technology, particularly in AI and Neural Networks, where I enjoy building models like handwriting recognition systems and NLP tools for hate speech detection. My curiosity also extends to cybersecurity, exploring tools like Kali Linux and techniques like password cracking to understand system vulnerabilities better.
+                </p>
+                <p>
+                    Beyond software, I'm comfortable with hardware management and OS installations, giving me a holistic view of computing systems. I'm a strong believer in continuous learning, as demonstrated by my NPTEL Star recognition and certifications from Harvard's CS50 and Google AI. My goal is to leverage technology to create seamless, impactful user experiences and solve real-world problems. Let's build something amazing together!
+                </p>
+            </motion.div>
+        </div>
       </section>
 
 
@@ -221,7 +280,7 @@ function App() {
           <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Cybersecurity & Ethical Hacking</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
             <SkillIcon icon={<Shield size={32} />} name="Kali Linux" />
-            <SkillIcon icon={<HashIcon size={32} />} name="John the Ripper" />
+            <SkillIcon icon={<HashIcon size={32} />} name="John the Ripper" /> {/* Use HashIcon */}
             <SkillIcon icon={<Terminal size={32} />} name="Termux" />
             <SkillIcon icon={<Key size={32} />} name="Password Cracking" />
             <SkillIcon icon={<Wifi size={32} />} name="WiFi Cracking" />
@@ -249,13 +308,13 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle icon={<Code2 />} title="Projects" />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {/* Add your PopupProjectCard components here, removing the isDark prop */}
+             {/* Project Cards */}
              <PopupProjectCard
                 title="Hate Speech Detection using NLP"
                 description="An AI-powered system that identifies and filters harmful language in text, ensuring safer online interactions."
-                image="https://source.unsplash.com/600x400/?ai,security"
+                image="https://source.unsplash.com/600x400/?ai,security" // Consider replacing with actual project images
                 tags={['Python', 'NLP', 'ML']}
-                link="" // Add link if available
+                // link="your-repo-link-here" // Add link if available
                 details={{
                     challenge: "Ensuring online safety by detecting hate speech in text data.",
                     solution: "Used NLP techniques and machine learning models to classify and filter harmful content.",
@@ -271,7 +330,7 @@ function App() {
                 description="An AI-powered model that recognizes and digitizes handwritten text, useful for document automation."
                 image="https://source.unsplash.com/600x400/?handwriting,ai"
                 tags={['Python', 'Neural Networks']}
-                link="" // Add link if available
+                // link=""
                 details={{
                     challenge: "Automating the recognition and digitization of handwritten documents.",
                     solution: "Developed a neural network-based model for efficient text recognition.",
@@ -287,7 +346,7 @@ function App() {
                 description="A Python script to crack ZIP file passwords using brute-force techniques with GPU acceleration."
                 image="https://source.unsplash.com/600x400/?hacking,security"
                 tags={['Python', 'Cybersecurity']}
-                link="" // Add link if available
+                // link=""
                 details={{
                     challenge: "Recovering lost ZIP passwords efficiently relying on GPUs.",
                     solution: "Implemented a custom brute-force algorithm optimized for GPU usage.",
@@ -303,7 +362,7 @@ function App() {
                 description="A real-time doubt resolution platform with live content updates and resource management."
                 image="https://source.unsplash.com/600x400/?learning,technology"
                 tags={['Flutter', 'Dart', 'Firebase']}
-                link="" // Add link if available
+                // link=""
                 details={{
                     challenge: "Providing a real-time, scalable platform for students and educators.",
                     solution: "Developed a dynamic content display system using Firebase and Flutter.",
@@ -318,8 +377,8 @@ function App() {
                 title="DoubtTopia (Android Studio Version)"
                 description="An Android app for managing doubts, featuring document uploads and discussions."
                 image="https://source.unsplash.com/600x400/?education,discussion"
-                tags={['Android', 'Java/Kotlin', 'Firebase']}
-                link="" // Add link if available
+                tags={['Android', 'Kotlin', 'Firebase']} // Updated tag assuming Kotlin
+                // link=""
                 details={{
                     challenge: "Creating a collaborative platform for students to resolve doubts.",
                     solution: "Built an intuitive Android app that categorizes PDFs by semester/subject.",
@@ -335,7 +394,7 @@ function App() {
                 description="Python script for bulk image downloads and Excel path updates for data management."
                 image="https://source.unsplash.com/600x400/?automation,data"
                 tags={['Python', 'Automation', 'Excel']}
-                link="" // Add link if available
+                // link=""
                 details={{
                     challenge: "Managing large-scale image downloads and organization in Excel.",
                     solution: "Developed an automated Python script to download images and update paths.",
@@ -351,7 +410,7 @@ function App() {
                 description="Reinforcement learning AI model for Tic-Tac-Toe, showing Q-table updates."
                 image="https://source.unsplash.com/600x400/?ai,games"
                 tags={['Python', 'RL', 'AI']}
-                link="" // Add link if available
+                // link=""
                 details={{
                     challenge: "Developing an AI that learns and improves its gameplay strategy.",
                     solution: "Used Q-learning to train an AI that adapts to player moves.",
@@ -371,40 +430,40 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle icon={<Award />} title="Achievements & Certifications" />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Add AchievementCard components here, removing the isDark prop */}
+            {/* Achievement Cards - Make sure image paths are correct relative to your 'public' folder or imported */}
             <AchievementCard
                 title="NPTEL Star"
-                image="assets\NPTEL_BELIEVERS.png" // Make sure path is correct relative to public folder or import
+                image="/assets/NPTEL_BELIEVERS.png" // Example: Assuming assets is in public
                 date="2024"
                 description="Recognition for outstanding performance in NPTEL courses."
             />
             <AchievementCard
                 title="Harvard’s CS50 Certificate"
-                image="assets\CS50python.png" // Make sure path is correct
+                image="/assets/CS50python.png"
                 date="2024"
                 description="Earned certification demonstrating expertise in Python, problem-solving, and algorithms."
             />
             <AchievementCard
                 title="Machine Learning at the Edge"
-                image="assets\MachineLearningEdge.png" // Make sure path is correct
+                image="/assets/MachineLearningEdge.png"
                 date="2024"
                 description="Gained experience deploying AI models on edge devices, focusing on efficiency and optimization."
             />
              <AchievementCard
                 title="Java Programming Basic Skills"
-                image="assets\JavaProgrammingBasicSkills.png" // Make sure path is correct
+                image="/assets/JavaProgrammingBasicSkills.png"
                 date="2024"
                 description="Learned core Java concepts and object-oriented programming."
             />
             <AchievementCard
                 title="Introduction to Cloud Computing"
-                image="assets\CloudComputing.png" // Make sure path is correct
+                image="/assets/CloudComputing.png"
                 date="2024"
                 description="Acquired foundational knowledge in cloud architecture, deployment models, and services."
             />
             <AchievementCard
                 title="Google AI for Anyone"
-                image="assets\GoogleAI.png" // Make sure path is correct
+                image="/assets/GoogleAI.png"
                 date="2024"
                 description="Completed Google's AI fundamentals course on AI concepts, ML principles, and applications."
             />
@@ -431,7 +490,7 @@ function App() {
             <div className="max-w-2xl mx-auto">
               {/* Light theme form container */}
               <div className="p-8 rounded-2xl bg-white shadow-xl">
-                <form className="space-y-6">
+                <form className="space-y-6" /* Add onSubmit={handleFormSubmit} if needed */ >
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                       Name
@@ -439,6 +498,8 @@ function App() {
                     <input
                       type="text"
                       id="name"
+                      name="name" // Add name attribute for form handling
+                      required // Add required attribute
                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="Your name"
                     />
@@ -450,6 +511,8 @@ function App() {
                     <input
                       type="email"
                       id="email"
+                      name="email"
+                      required
                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="Your email"
                     />
@@ -460,7 +523,9 @@ function App() {
                     </label>
                     <textarea
                       id="message"
+                      name="message"
                       rows={5}
+                      required
                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                       placeholder="Your message"
                     ></textarea>
@@ -468,13 +533,9 @@ function App() {
                   <motion.button
                     whileHover={{ scale: 1.02, filter: 'brightness(1.1)' }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300"
-                    type="button" // Change to type="submit" if you add form handling logic
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default form submission for now
-                      // Add your form submission logic here
-                      alert('Form submission not implemented yet.');
-                    }}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow hover:shadow-md"
+                    type="submit" // Changed to submit - add onSubmit handler to <form>
+                    // Removed onClick handler - use form's onSubmit
                   >
                     Send Message <Send size={18} />
                   </motion.button>
@@ -494,10 +555,10 @@ function App() {
               <p className="text-gray-600">Turning ideas into elegant code & seamless experiences.</p>
             </div>
             <div className="flex justify-start md:justify-end space-x-6">
-              {/* Update links */}
-              <FooterLink href="https://github.com/your-github-username" icon={<Github size={24}/>} />
-              <FooterLink href="https://linkedin.com/in/your-linkedin-profile" icon={<Linkedin size={24}/>} />
-              <FooterLink href="mailto:your.email@example.com" icon={<Mail size={24}/>} />
+              {/* Update href links with your actual profiles */}
+              <FooterLink href="https://github.com/your-github-username" ariaLabel="GitHub Profile" icon={<Github size={24}/>} />
+              <FooterLink href="https://linkedin.com/in/your-linkedin-profile" ariaLabel="LinkedIn Profile" icon={<Linkedin size={24}/>} />
+              <FooterLink href="mailto:your.email@example.com" ariaLabel="Send Email" icon={<Mail size={24}/>} />
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-600">
@@ -505,45 +566,66 @@ function App() {
           </div>
         </div>
       </footer>
-    </div>
+    </div> // Close main div
   );
-}
+} // Close App Component
 
-// Updated NavLink to handle mobile styling and onClick
-function NavLink({ href, children, isMobile = false, onClick }: { href: string; children: React.ReactNode; isMobile?: boolean; onClick?: () => void }) {
+
+// --- Sub Components ---
+
+// UPDATED NavLink Component
+function NavLink({ href, children, isMobile = false, onClick }: {
+    href: string;
+    children: React.ReactNode;
+    isMobile?: boolean;
+    onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void; // Accepts the event
+}) {
   const mobileClasses = "block w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 text-left";
-  const desktopClasses = "text-gray-700 hover:text-gray-900 transition-colors px-1"; // Simplified desktop
+  const desktopClasses = "text-gray-700 hover:text-blue-600 transition-colors px-1 font-medium relative group"; // Added interactive styling for desktop
+
+  // This internal handler just calls the onClick passed from the parent if it exists
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onClick) {
+      onClick(event);
+    }
+    // The actual scroll logic for mobile is now in `handleMobileNavClick` in App component
+  };
 
   return (
     <motion.a
       href={href}
       className={isMobile ? mobileClasses : desktopClasses}
-      whileHover={{ scale: isMobile ? 1 : 1.05 }} // No scale on mobile hover
+      whileHover={isMobile ? {} : { y: -2 }} // Only lift on desktop hover
       whileTap={{ scale: 0.95 }}
-      onClick={onClick} // Execute onClick (e.g., close mobile menu)
+      onClick={handleClick} // Use the wrapper function
     >
       {children}
+       {/* Underline animation for desktop */}
+      {!isMobile && (
+        <span className="absolute bottom-0 left-0 h-0.5 bg-blue-600 w-0 group-hover:w-full transition-all duration-300"></span>
+      )}
     </motion.a>
   );
 }
 
-// Updated FooterLink (removed isDark)
-function FooterLink({ icon, href }: { icon: React.ReactNode; href: string }) {
+// FooterLink Component (Added aria-label)
+function FooterLink({ icon, href, ariaLabel }: { icon: React.ReactNode; href: string; ariaLabel: string }) {
   return (
     <motion.a
-      whileHover={{ scale: 1.1, color: '#3B82F6' }} // Example hover color (blue-500)
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.15, color: '#2563EB' }} // Adjusted color to blue-600
+      whileTap={{ scale: 0.9 }}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-gray-600 hover:text-gray-900 transition-colors" // Default light theme colors
+      className="text-gray-500 hover:text-gray-900 transition-colors"
+      aria-label={ariaLabel} // Accessibility
     >
       {icon}
     </motion.a>
   );
 }
 
-// Updated SectionTitle (removed isDark)
+// SectionTitle Component
 function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
     <motion.div
@@ -551,19 +633,20 @@ function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string })
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="flex items-center gap-4 mb-12 md:mb-16" // Increased bottom margin
+      className="flex items-center gap-4 mb-12 md:mb-16"
     >
-      {/* Gradient background for icon */}
-      <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl text-white shadow-md">
-        {/* Ensure icon itself is white or contrasts well */}
-        {React.cloneElement(icon as React.ReactElement, { size: 28, color: 'white' })}
+      {/* Icon wrapper */}
+      <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl text-white shadow-lg flex-shrink-0">
+        {/* Clone icon to enforce size/color */}
+        {React.cloneElement(icon as React.ReactElement, { size: 28, color: 'white', strokeWidth: 2 })}
       </div>
+      {/* Title */}
       <h2 className="text-4xl md:text-5xl font-bold text-gray-900">{title}</h2>
     </motion.div>
   );
 }
 
-// --- PopupProjectCard Component (Updated) ---
+// PopupProjectCard Component Interface and Implementation
 interface ProjectDetails {
   challenge: string;
   solution: string;
@@ -575,57 +658,78 @@ function PopupProjectCard({
   title,
   description,
   image,
-  link, // Added link prop
+  link,
   tags,
   details,
 }: {
   title: string;
   description: string;
   image: string;
-  link?: string; // Link is optional
+  link?: string;
   tags: string[];
   details: ProjectDetails;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Prevent background scroll when modal is open
+  useEffect(() => {
+    if (isExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    // Cleanup function to restore scroll on component unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isExpanded]);
+
+
   return (
-    <> {/* Use Fragment to handle overlay */}
+    <> {/* Fragment for Portal/Overlay Logic */}
+      {/* Card itself */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, amount: 0.2 }} // Trigger slightly earlier
         transition={{ duration: 0.6, delay: 0.1 }}
-        layout // Enable layout animation
-        className="group relative bg-white shadow-lg rounded-2xl overflow-hidden cursor-pointer border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+        layout // Enable layout animation between states
+        className="group relative bg-white shadow-lg rounded-2xl overflow-hidden cursor-pointer border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full flex flex-col" // Added h-full and flex
         onClick={() => setIsExpanded(true)} // Expand on click
       >
-        <motion.div layout="position" className="relative">
-          <img src={image} alt={title} className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105" />
-           {/* Subtle gradient overlay on image hover */}
-           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        {/* Image Container */}
+        <motion.div layout="position" className="relative aspect-video overflow-hidden"> {/* Aspect ratio container */}
+          <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </motion.div>
 
-        <motion.div layout="position" className="p-6">
-          <h3 className="text-xl font-bold mb-2 text-gray-900">{title}</h3>
-          <p className="text-gray-600 mb-4 text-sm line-clamp-2">{description}</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {tags.map((tag, index) => (
-              <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                {tag}
-              </span>
-            ))}
+        {/* Content Container */}
+        <motion.div layout="position" className="p-6 flex-grow flex flex-col justify-between"> {/* Added flex-grow */}
+          <div> {/* Top content group */}
+            <h3 className="text-xl font-bold mb-2 text-gray-900">{title}</h3>
+            <p className="text-gray-600 mb-4 text-sm line-clamp-3">{description}</p> {/* Allow slightly more text */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {tags.map((tag, index) => (
+                <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
-          <motion.div
-             className="inline-flex items-center gap-1 text-sm text-blue-600 group-hover:text-blue-700 font-medium"
+           {/* View Details Button */}
+           <motion.div
+             className="inline-flex items-center gap-1 text-sm text-blue-600 group-hover:text-blue-700 font-medium mt-auto pt-2" // Ensure it's at bottom
           >
-            View Details <ExternalLink size={14} className="opacity-70 group-hover:opacity-100"/>
+            View Details <ExternalLink size={14} className="opacity-70 group-hover:opacity-100 transition-opacity"/>
           </motion.div>
         </motion.div>
       </motion.div>
 
-      {/* Modal Popup Logic */}
+      {/* --- Modal Popup --- */}
       <AnimatePresence>
         {isExpanded && (
+          // Note: Consider using React Portal for modals `import ReactDOM from 'react-dom';` `ReactDOM.createPortal(...)`
+          // For simplicity, keeping it inline here.
           <>
             {/* Overlay */}
             <motion.div
@@ -633,43 +737,49 @@ function PopupProjectCard({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/70 z-[90]" // Ensure overlay is behind modal
-              onClick={() => setIsExpanded(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90]" // Added subtle blur
+              onClick={() => setIsExpanded(false)} // Close on overlay click
+              aria-hidden="true" // Hide from screen readers
             />
 
             {/* Expanded Card Modal */}
             <motion.div
-              layoutId={`project-card-${title}`} // Unique ID for layout animation
-              initial={{ opacity: 0, scale: 0.9 }}
+              layoutId={`project-card-${title}`} // Must match for animation
+              initial={{ opacity: 0, scale: 0.9, y: 50 }}
               animate={{
                 opacity: 1,
                 scale: 1,
+                y: 0,
               }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              exit={{ opacity: 0, scale: 0.9, y: 50 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed top-1/2 left-1/2 w-[90vw] max-w-4xl h-[85vh] max-h-[700px] -translate-x-1/2 -translate-y-1/2 z-[100] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+              // Improved sizing and positioning
+              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-4xl h-[90vh] max-h-[700px] z-[100] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal content
+              role="dialog" // ARIA role
+              aria-modal="true" // ARIA state
+              aria-labelledby={`modal-title-${title}`} // Link to title for screen readers
             >
               {/* Modal Header */}
-              <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900">{title}</h3>
+              <div className="flex justify-between items-center p-4 sm:p-5 border-b border-gray-200 flex-shrink-0 bg-gray-50 rounded-t-2xl">
+                <h3 id={`modal-title-${title}`} className="text-lg sm:text-xl font-bold text-gray-900">{title}</h3>
                 <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90, backgroundColor: '#f3f4f6' }} // bg-gray-100
+                  whileHover={{ scale: 1.1, rotate: 90, backgroundColor: '#E5E7EB' }} // bg-gray-200
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setIsExpanded(false)}
                   className="p-2 rounded-full text-gray-500 hover:text-gray-800 transition-colors"
-                  aria-label="Close modal"
+                  aria-label="Close project details" // Accessibility
                 >
                   <X size={20} />
                 </motion.button>
               </div>
 
               {/* Modal Content (Scrollable) */}
-              <div className="p-4 sm:p-6 overflow-y-auto flex-grow">
+              <div className="p-4 sm:p-6 overflow-y-auto flex-grow custom-scrollbar"> {/* Add custom scrollbar class if needed */}
                  {/* Image Gallery */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     {details.images.map((img, index) => (
-                        <img key={index} src={img} alt={`${title} screenshot ${index + 1}`} className="rounded-lg shadow-sm w-full h-48 object-cover border border-gray-200" />
+                        <img key={index} src={img} alt={`${title} example ${index + 1}`} className="rounded-lg shadow-sm w-full h-48 object-cover border border-gray-200 bg-gray-100" loading="lazy" />
                     ))}
                 </div>
 
@@ -683,17 +793,17 @@ function PopupProjectCard({
                 </div>
 
                 {/* Details Sections */}
-                <div className="space-y-5 mb-6 text-gray-700 text-base leading-relaxed">
+                <div className="space-y-5 mb-6 text-gray-700 text-sm sm:text-base leading-relaxed prose prose-sm sm:prose-base max-w-none"> {/* Prose for better text styling */}
                   <div>
-                    <h4 className="text-lg font-semibold mb-1 text-blue-700">The Challenge</h4>
+                    <h4 className="text-base sm:text-lg font-semibold mb-1 text-blue-700 !mt-0">The Challenge</h4> {/* Override prose margin */}
                     <p>{details.challenge}</p>
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold mb-1 text-blue-700">The Solution</h4>
+                    <h4 className="text-base sm:text-lg font-semibold mb-1 text-blue-700">The Solution</h4>
                     <p>{details.solution}</p>
                   </div>
                   <div>
-                    <h4 className="text-lg font-semibold mb-1 text-blue-700">The Results</h4>
+                    <h4 className="text-base sm:text-lg font-semibold mb-1 text-blue-700">The Results</h4>
                     <p>{details.results}</p>
                   </div>
                 </div>
@@ -701,14 +811,14 @@ function PopupProjectCard({
 
               {/* Modal Footer (Optional Link) */}
               {link && (
-                  <div className="p-4 sm:p-6 border-t border-gray-200 flex-shrink-0 text-right">
+                  <div className="p-4 sm:p-5 border-t border-gray-200 flex-shrink-0 text-right bg-gray-50 rounded-b-2xl">
                       <motion.a
-                          whileHover={{ scale: 1.03, filter: 'brightness(1.1)' }}
+                          whileHover={{ scale: 1.03, filter: 'brightness(1.05)' }} // Subtle hover effect
                           whileTap={{ scale: 0.97 }}
                           href={link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors text-sm font-medium shadow-sm"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors text-xs sm:text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       >
                           Visit Project <ExternalLink size={16} />
                       </motion.a>
@@ -723,29 +833,30 @@ function PopupProjectCard({
 }
 
 
-// Updated SkillIcon (removed isDark)
+// SkillIcon Component
 function SkillIcon({ icon, name }: { icon: React.ReactNode; name: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.3 }} // Trigger when 30% visible
       transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.05, y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }} // Added shadow on hover
-      className="flex flex-col items-center justify-center p-4 sm:p-6 bg-white hover:bg-white rounded-xl transition-all duration-300 border border-gray-100 text-center shadow-sm hover:shadow-md"
+      whileHover={{ scale: 1.05, y: -5, boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -4px rgba(59, 130, 246, 0.1)' }} // Adjusted shadow color (blueish)
+      className="flex flex-col items-center justify-center p-4 sm:p-5 bg-white hover:bg-white rounded-xl transition-all duration-300 border border-gray-100 text-center shadow-sm hover:shadow-lg cursor-default" // Changed hover shadow
     >
-      {/* Icon color */}
+      {/* Icon styling */}
       <div className="mb-3 text-blue-600">
-        {icon}
+        {React.cloneElement(icon as React.ReactElement, { strokeWidth: 1.5 })} {/* Standardize stroke */}
       </div>
-      <span className="text-sm sm:text-base text-gray-700 font-medium">
+      {/* Text styling */}
+      <span className="text-sm sm:text-base text-gray-700 font-medium leading-tight">
         {name}
       </span>
     </motion.div>
   );
 }
 
-// Updated AchievementCard (removed isDark)
+// AchievementCard Component
 function AchievementCard({ title, image, date, description }: {
   title: string;
   image: string;
@@ -756,23 +867,24 @@ function AchievementCard({ title, image, date, description }: {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="overflow-hidden rounded-xl bg-white shadow-lg group border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+      className="overflow-hidden rounded-xl bg-white shadow-lg group border border-gray-100 hover:shadow-xl transition-shadow duration-300 flex flex-col h-full" // Added flex/h-full
     >
-      <div className="relative h-48 overflow-hidden">
-         {/* Image */}
-        <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-         {/* Date Badge */}
+      {/* Image container with aspect ratio */}
+      <div className="relative aspect-[16/10] overflow-hidden"> {/* Adjust aspect ratio if needed */}
+        <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+        {/* Darker gradient overlay for better text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+        {/* Date Badge - Positioned bottom-left */}
         <div className="absolute bottom-3 left-3 z-10">
           <span className="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full shadow">
               {date}
           </span>
         </div>
       </div>
-      <div className="p-5 sm:p-6">
+      {/* Content container */}
+      <div className="p-5 sm:p-6 flex-grow"> {/* Added flex-grow */}
         <h3 className="text-lg font-bold mb-2 text-gray-900">{title}</h3>
         <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
       </div>
@@ -780,5 +892,5 @@ function AchievementCard({ title, image, date, description }: {
   );
 }
 
-
+// Default export for the App component
 export default App;
