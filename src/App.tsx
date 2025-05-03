@@ -81,9 +81,9 @@ function App() {
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`text-xl font-semibold text-gray-900`}
+              className={`text-xl font-bold text-gray-900`}
             >
-              P Sudarsan
+              SDA
             </motion.span>
 
             {/* Desktop Navigation Links */}
