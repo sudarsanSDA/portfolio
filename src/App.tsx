@@ -369,7 +369,7 @@ function App() {
       />
       <AchievementCard
         title="Java Programming Basic Skills"
-        image="/assets/MachineLearningEdge.png"
+        image="assets\MachineLearningEdge.png"
         date="2024"
         description="Learned core Java concepts and object-oriented programming."
         isDark={isDark}
