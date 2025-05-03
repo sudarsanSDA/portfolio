@@ -355,14 +355,14 @@ function App() {
       />
       <AchievementCard
         title="Harvard’s CS50 Certificate"  
-        image="assets\CS50python.png"  
+        image="assets/CS50python.png"  
         date="2024"  
         description="Earned a prestigious certification from Harvard’s CS50 course, demonstrating expertise in Python programming, problem-solving, and algorithmic thinking."  
         isDark={isDark}
       />
       <AchievementCard
         title="Machine Learning at the Edge"
-        image="assets\MachineLearningEdge.jpg"
+        image="assets/MachineLearningEdge.jpg"
         date="2024"
         description="Gained hands-on experience in deploying AI models on edge devices, focusing on efficiency, optimization, and real-world ML applications."
         isDark={isDark}
