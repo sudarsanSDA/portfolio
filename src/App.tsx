@@ -383,7 +383,7 @@ function App() {
       />
       <AchievementCard
         title="Google AI for Anyone"
-        image="assets\GoogleAI.jpg"
+        image="personal_portfolio/assets/GoogleAI.jpg"
         date="2024"
         description="Completed Google's AI fundamentals course, gaining insights into artificial intelligence concepts, machine learning principles, and real-world AI applications."
         isDark={isDark}
