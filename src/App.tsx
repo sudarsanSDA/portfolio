@@ -170,9 +170,9 @@ function App() {
              Highly motivated and detail-oriented B.Tech student specializing in Computer Science & Engineering with a passion for developing innovative solutions. Proficient in diverse areas including AI/ML, cybersecurity, mobile app development (Flutter, Android), and web technologies. Proven ability to tackle complex problems, automate tasks, and contribute effectively to team projects. Eager to apply my skills and continuously learn in a challenging and dynamic environment.
            </motion.p>
              <div className="mt-12 flex justify-center space-x-6">
-                <FooterLink href="https://github.com/sudarsan2004" icon={<Github size={28} />} />
+                <FooterLink href="https://github.com/sudarsanSDA" icon={<Github size={28} />} />
                 <FooterLink href="https://linkedin.com/in/sudarsan-p-78390725a" icon={<Linkedin size={28} />} />
-                <FooterLink href="mailto:sudarsan3843@gmail.com" icon={<Mail size={28} />} />
+                <FooterLink href="mailto:sudarsanjcr@gmail.com" icon={<Mail size={28} />} />
              </div>
          </div>
        </section>
@@ -497,9 +497,9 @@ function App() {
               <p className={'text-gray-600'}>Turning ideas into elegant code & seamless experiences.</p>
             </div>
             <div className="flex justify-center md:justify-end space-x-6">
-              <FooterLink href="https://github.com/sudarsan2004" icon={<Github size={24} />} />
+              <FooterLink href="https://github.com/sudarsansda" icon={<Github size={24} />} />
               <FooterLink href="https://linkedin.com/in/sudarsan-p-78390725a" icon={<Linkedin size={24} />} />
-              <FooterLink href="mailto:sudarsan3843@gmail.com" icon={<Mail size={24} />} />
+              <FooterLink href="mailto:sudarsanjcr@gmail.com" icon={<Mail size={24} />} />
             </div>
           </div>
           <div className={`mt-12 pt-8 border-t border-gray-200 text-center text-gray-600`}>
