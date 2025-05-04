@@ -433,37 +433,37 @@ function App() {
             {/* Achievement Cards - Make sure image paths are correct relative to your 'public' folder or imported */}
             <AchievementCard
                 title="NPTEL Star"
-                image="/assets/NPTEL_BELIEVERS.png" // Example: Assuming assets is in public
+                image="assets/NPTEL_BELIEVERS.png" // Example: Assuming assets is in public
                 date="2024"
                 description="Recognition for outstanding performance in NPTEL courses."
             />
             <AchievementCard
                 title="Harvard’s CS50 Certificate"
-                image="/assets/CS50python.png"
+                image="assets/CS50python.png"
                 date="2024"
                 description="Earned certification demonstrating expertise in Python, problem-solving, and algorithms."
             />
             <AchievementCard
                 title="Machine Learning at the Edge"
-                image="/assets/MachineLearningEdge.png"
+                image="assets/MachineLearningEdge.png"
                 date="2024"
                 description="Gained experience deploying AI models on edge devices, focusing on efficiency and optimization."
             />
              <AchievementCard
                 title="Java Programming Basic Skills"
-                image="/assets/JavaProgrammingBasicSkills.png"
+                image="assets/JavaProgrammingBasicSkills.png"
                 date="2024"
                 description="Learned core Java concepts and object-oriented programming."
             />
             <AchievementCard
                 title="Introduction to Cloud Computing"
-                image="/assets/CloudComputing.png"
+                image="assets/CloudComputing.png"
                 date="2024"
                 description="Acquired foundational knowledge in cloud architecture, deployment models, and services."
             />
             <AchievementCard
                 title="Google AI for Anyone"
-                image="/assets/GoogleAI.png"
+                image="assets/GoogleAI.png"
                 date="2024"
                 description="Completed Google's AI fundamentals course on AI concepts, ML principles, and applications."
             />
