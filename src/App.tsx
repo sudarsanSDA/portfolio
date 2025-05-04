@@ -307,14 +307,13 @@ function App() {
       <section id="projects" className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle icon={<Code2 />} title="Projects" />
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {/* Project Cards */}
-             <PopupProjectCard
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mx-auto" style={{ width: "auto" }}>
+            {/* Project Cards */}
+            <PopupProjectCard
                 title="Hate Speech Detection using NLP"
                 description="An AI-powered system that identifies and filters harmful language in text, ensuring safer online interactions."
-                image="https://source.unsplash.com/600x400/?ai,security" // Consider replacing with actual project images
+                image="https://source.unsplash.com/600x400/?ai,security"
                 tags={['Python', 'NLP', 'ML']}
-                // link="your-repo-link-here" // Add link if available
                 details={{
                     challenge: "Ensuring online safety by detecting hate speech in text data.",
                     solution: "Used NLP techniques and machine learning models to classify and filter harmful content.",
@@ -324,13 +323,12 @@ function App() {
                         "https://source.unsplash.com/600x400/?cybersecurity,nlp"
                     ]
                 }}
-            />
-             <PopupProjectCard
+              />
+              <PopupProjectCard
                 title="Handwriting Recognition System"
                 description="An AI-powered model that recognizes and digitizes handwritten text, useful for document automation."
                 image="https://source.unsplash.com/600x400/?handwriting,ai"
                 tags={['Python', 'Neural Networks']}
-                // link=""
                 details={{
                     challenge: "Automating the recognition and digitization of handwritten documents.",
                     solution: "Developed a neural network-based model for efficient text recognition.",
@@ -340,13 +338,12 @@ function App() {
                     "https://source.unsplash.com/600x400/?machine-learning,handwriting"
                     ]
                 }}
-            />
-             <PopupProjectCard
+              />
+              <PopupProjectCard
                 title="Brute-Force ZIP Password Cracker"
                 description="A Python script to crack ZIP file passwords using brute-force techniques with GPU acceleration."
                 image="https://source.unsplash.com/600x400/?hacking,security"
                 tags={['Python', 'Cybersecurity']}
-                // link=""
                 details={{
                     challenge: "Recovering lost ZIP passwords efficiently relying on GPUs.",
                     solution: "Implemented a custom brute-force algorithm optimized for GPU usage.",
@@ -356,13 +353,12 @@ function App() {
                     "https://source.unsplash.com/600x400/?cybersecurity,attack"
                     ]
                 }}
-            />
-             <PopupProjectCard
+              />
+              <PopupProjectCard
                 title="DoubtTopia (Flutter Version)"
                 description="A real-time doubt resolution platform with live content updates and resource management."
                 image="https://source.unsplash.com/600x400/?learning,technology"
                 tags={['Flutter', 'Dart', 'Firebase']}
-                // link=""
                 details={{
                     challenge: "Providing a real-time, scalable platform for students and educators.",
                     solution: "Developed a dynamic content display system using Firebase and Flutter.",
@@ -372,13 +368,12 @@ function App() {
                     "https://source.unsplash.com/600x400/?students,discussion"
                     ]
                 }}
-            />
-             <PopupProjectCard
+              />
+              <PopupProjectCard
                 title="DoubtTopia (Android Studio Version)"
                 description="An Android app for managing doubts, featuring document uploads and discussions."
                 image="https://source.unsplash.com/600x400/?education,discussion"
-                tags={['Android', 'Kotlin', 'Firebase']} // Updated tag assuming Kotlin
-                // link=""
+                tags={['Android', 'Kotlin', 'Firebase']}
                 details={{
                     challenge: "Creating a collaborative platform for students to resolve doubts.",
                     solution: "Built an intuitive Android app that categorizes PDFs by semester/subject.",
@@ -388,13 +383,12 @@ function App() {
                     "https://source.unsplash.com/600x400/?pdf,documents"
                     ]
                 }}
-            />
-             <PopupProjectCard
+              />
+              <PopupProjectCard
                 title="Automated Image Downloader & Excel Updater"
                 description="Python script for bulk image downloads and Excel path updates for data management."
                 image="https://source.unsplash.com/600x400/?automation,data"
                 tags={['Python', 'Automation', 'Excel']}
-                // link=""
                 details={{
                     challenge: "Managing large-scale image downloads and organization in Excel.",
                     solution: "Developed an automated Python script to download images and update paths.",
@@ -404,13 +398,12 @@ function App() {
                     "https://source.unsplash.com/600x400/?excel,data"
                     ]
                 }}
-            />
-             <PopupProjectCard
+              />
+              <PopupProjectCard
                 title="Tic-Tac-Toe AI"
                 description="Reinforcement learning AI model for Tic-Tac-Toe, showing Q-table updates."
                 image="https://source.unsplash.com/600x400/?ai,games"
                 tags={['Python', 'RL', 'AI']}
-                // link=""
                 details={{
                     challenge: "Developing an AI that learns and improves its gameplay strategy.",
                     solution: "Used Q-learning to train an AI that adapts to player moves.",
@@ -420,7 +413,7 @@ function App() {
                     "https://source.unsplash.com/600x400/?q-learning,games"
                     ]
                 }}
-            />
+              />
           </div>
         </div>
       </section>
@@ -449,7 +442,18 @@ function App() {
                 date="2024"
                 description="Gained experience deploying AI models on edge devices, focusing on efficiency and optimization."
             />
-             
+             <AchievementCard
+                title="Java Programming Basic Skills"
+                image="assets/JavaProgrammingBasicSkills.png"
+                date="2024"
+                description="Learned core Java concepts and object-oriented programming."
+            />
+            <AchievementCard
+                title="Introduction to Cloud Computing"
+                image="assets/CloudComputing.png"
+                date="2024"
+                description="Acquired foundational knowledge in cloud architecture, deployment models, and services."
+            />
             <AchievementCard
                 title="Google AI for Anyone"
                 image="assets/GoogleAI.png"
@@ -658,169 +662,38 @@ function PopupProjectCard({
   tags: string[];
   details: ProjectDetails;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  // Prevent background scroll when modal is open
-  useEffect(() => {
-    if (isExpanded) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    // Cleanup function to restore scroll on component unmount
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isExpanded]);
-
-
   return (
-    <> {/* Fragment for Portal/Overlay Logic */}
-      {/* Card itself */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }} // Trigger slightly earlier
-        transition={{ duration: 0.6, delay: 0.1 }}
-        layout // Enable layout animation between states
-        className="group relative bg-white shadow-lg rounded-2xl overflow-hidden cursor-pointer border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full flex flex-col" // Added h-full and flex
-        onClick={() => setIsExpanded(true)} // Expand on click
-      >
-        {/* Image Container */}
-        <motion.div layout="position" className="relative aspect-video overflow-hidden"> {/* Aspect ratio container */}
-          <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        </motion.div>
-
-        {/* Content Container */}
-        <motion.div layout="position" className="p-6 flex-grow flex flex-col justify-between"> {/* Added flex-grow */}
-          <div> {/* Top content group */}
-            <h3 className="text-xl font-bold mb-2 text-gray-900">{title}</h3>
-            <p className="text-gray-600 mb-4 text-sm line-clamp-3">{description}</p> {/* Allow slightly more text */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {tags.map((tag, index) => (
-                <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-           {/* View Details Button */}
-           <motion.div
-             className="inline-flex items-center gap-1 text-sm text-blue-600 group-hover:text-blue-700 font-medium mt-auto pt-2" // Ensure it's at bottom
-          >
-            View Details <ExternalLink size={14} className="opacity-70 group-hover:opacity-100 transition-opacity"/>
-          </motion.div>
-        </motion.div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+      layout
+      className="group relative bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
+    >
+      {/* Image Container */}
+      <motion.div layout="position" className="relative aspect-video overflow-hidden">
+        <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </motion.div>
 
-      {/* --- Modal Popup --- */}
-      <AnimatePresence>
-        {isExpanded && (
-          // Note: Consider using React Portal for modals `import ReactDOM from 'react-dom';` `ReactDOM.createPortal(...)`
-          // For simplicity, keeping it inline here.
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90]" // Added subtle blur
-              onClick={() => setIsExpanded(false)} // Close on overlay click
-              aria-hidden="true" // Hide from screen readers
-            />
-
-            {/* Expanded Card Modal */}
-            <motion.div
-              layoutId={`project-card-${title}`} // Must match for animation
-              initial={{ opacity: 0, scale: 0.9, y: 50 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                y: 0,
-              }}
-              exit={{ opacity: 0, scale: 0.9, y: 50 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              // Improved sizing and positioning
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-4xl h-[90vh] max-h-[700px] z-[100] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal content
-              role="dialog" // ARIA role
-              aria-modal="true" // ARIA state
-              aria-labelledby={`modal-title-${title}`} // Link to title for screen readers
-            >
-              {/* Modal Header */}
-              <div className="flex justify-between items-center p-4 sm:p-5 border-b border-gray-200 flex-shrink-0 bg-gray-50 rounded-t-2xl">
-                <h3 id={`modal-title-${title}`} className="text-lg sm:text-xl font-bold text-gray-900">{title}</h3>
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90, backgroundColor: '#E5E7EB' }} // bg-gray-200
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setIsExpanded(false)}
-                  className="p-2 rounded-full text-gray-500 hover:text-gray-800 transition-colors"
-                  aria-label="Close project details" // Accessibility
-                >
-                  <X size={20} />
-                </motion.button>
-              </div>
-
-              {/* Modal Content (Scrollable) */}
-              <div className="p-4 sm:p-6 overflow-y-auto flex-grow custom-scrollbar"> {/* Add custom scrollbar class if needed */}
-                 {/* Image Gallery */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                    {details.images.map((img, index) => (
-                        <img key={index} src={img} alt={`${title} example ${index + 1}`} className="rounded-lg shadow-sm w-full h-48 object-cover border border-gray-200 bg-gray-100" loading="lazy" />
-                    ))}
-                </div>
-
-                 {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {tags.map((tag, index) => (
-                     <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                         {tag}
-                     </span>
-                  ))}
-                </div>
-
-                {/* Details Sections */}
-                <div className="space-y-5 mb-6 text-gray-700 text-sm sm:text-base leading-relaxed prose prose-sm sm:prose-base max-w-none"> {/* Prose for better text styling */}
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold mb-1 text-blue-700 !mt-0">The Challenge</h4> {/* Override prose margin */}
-                    <p>{details.challenge}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold mb-1 text-blue-700">The Solution</h4>
-                    <p>{details.solution}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-base sm:text-lg font-semibold mb-1 text-blue-700">The Results</h4>
-                    <p>{details.results}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Modal Footer (Optional Link) */}
-              {link && (
-                  <div className="p-4 sm:p-5 border-t border-gray-200 flex-shrink-0 text-right bg-gray-50 rounded-b-2xl">
-                      <motion.a
-                          whileHover={{ scale: 1.03, filter: 'brightness(1.05)' }} // Subtle hover effect
-                          whileTap={{ scale: 0.97 }}
-                          href={link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors text-xs sm:text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                      >
-                          Visit Project <ExternalLink size={16} />
-                      </motion.a>
-                  </div>
-              )}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+      {/* Content Container */}
+      <motion.div layout="position" className="p-6 flex-grow flex flex-col justify-between">
+        <div>
+          <h3 className="text-xl font-bold mb-2 text-gray-900">{title}</h3>
+          <p className="text-gray-600 mb-4 text-sm line-clamp-3">{description}</p>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {tags.map((tag, index) => (
+              <span key={index} className="px-2.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
-
 
 // SkillIcon Component
 function SkillIcon({ icon, name }: { icon: React.ReactNode; name: string }) {
