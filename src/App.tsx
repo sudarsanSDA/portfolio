@@ -449,18 +449,7 @@ function App() {
                 date="2024"
                 description="Gained experience deploying AI models on edge devices, focusing on efficiency and optimization."
             />
-             <AchievementCard
-                title="Java Programming Basic Skills"
-                image="assets/JavaProgrammingBasicSkills.png"
-                date="2024"
-                description="Learned core Java concepts and object-oriented programming."
-            />
-            <AchievementCard
-                title="Introduction to Cloud Computing"
-                image="assets/CloudComputing.png"
-                date="2024"
-                description="Acquired foundational knowledge in cloud architecture, deployment models, and services."
-            />
+             
             <AchievementCard
                 title="Google AI for Anyone"
                 image="assets/GoogleAI.png"
