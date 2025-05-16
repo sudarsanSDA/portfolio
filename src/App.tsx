@@ -144,120 +144,118 @@ function App() {
   };
 
   // Dummy project data (replace with your actual data)
+  // assets/John_the_Ripper.png
   const projectsData: ProjectCardData[] = [
     {
         title: "Hate Speech Detection using NLP",
         description: "An AI-powered system that identifies and filters harmful language in text, ensuring safer online interactions.",
-        image: "https://source.unsplash.com/600x400/?ai,security",
+        image: "assets/Hate_speach_header.png",
         tags: ['Python', 'NLP', 'ML'],
         details: {
             challenge: "Ensuring online safety by detecting hate speech in text data. The rise of online platforms has also seen an increase in harmful content, making automated detection crucial.",
             solution: "Used Natural Language Processing (NLP) techniques and machine learning models (e.g., SVM, LSTM) to classify text. The model was trained on a diverse dataset of labeled text.",
             results: "Achieved high accuracy (e.g., 92%) in identifying various forms of hate speech, contributing to a significant reduction in toxic content on a simulated platform.",
             images: [
-                "https://source.unsplash.com/800x600/?text-analysis,ai",
-                "https://source.unsplash.com/800x600/?cybersecurity,nlp",
-                "https://source.unsplash.com/800x600/?data,algorithm"
+                
             ]
         },
-        link: "https://github.com/your-username/hate-speech-detection" // Example link
       },
       {
         title: "Handwriting Recognition System",
         description: "An AI-powered model that recognizes and digitizes handwritten text, useful for document automation.",
-        image: "https://source.unsplash.com/600x400/?handwriting,ai",
+        image: "assets/Hand_writing.png",
         tags: ['Python', 'Neural Networks', 'OpenCV'],
         details: {
             challenge: "Automating the tedious process of transcribing handwritten documents into digital text, especially for archival purposes or data entry.",
             solution: "Developed a Convolutional Neural Network (CNN) combined with a Recurrent Neural Network (RNN) for sequence recognition. Preprocessing steps included noise reduction and character segmentation.",
             results: "Successfully built a neural network that can accurately recognize and convert handwritten English text with a character error rate below 10% on test datasets.",
             images: [
-            "https://source.unsplash.com/800x600/?notebook,writing",
-            "https://source.unsplash.com/800x600/?machine-learning,handwriting",
-            "https://source.unsplash.com/800x600/?digital,scan"
+                "assets/Hand_writing1.png",
+                "assets/Hand_writings.png",
             ]
         }
       },
       {
         title: "Brute-Force ZIP Password Cracker",
         description: "A Python script to crack ZIP file passwords using brute-force techniques with GPU acceleration.",
-        image: "https://source.unsplash.com/600x400/?hacking,security",
+        image: "assets/John_the_Ripper.png",
         tags: ['Python', 'Cybersecurity', 'GPU'],
         details: {
             challenge: "Recovering lost passwords for encrypted ZIP files when other recovery methods fail. The main challenge is the computational time required for brute-force attacks.",
             solution: "Implemented a custom multi-threaded Python script that systematically tries password combinations. Explored using CUDA for GPU acceleration to significantly speed up the process for certain hash types (though ZIP's default encryption is CPU-bound).",
             results: "Successfully cracked passwords for ZIP files with simple to moderately complex passwords within a reasonable timeframe. Demonstrated the importance of strong, unique passwords.",
             images: [
-            "https://source.unsplash.com/800x600/?zip,cracking",
-            "https://source.unsplash.com/800x600/?cybersecurity,attack",
-            "https://source.unsplash.com/800x600/?lock,code"
+              "assets/John.png",
+              "assets/hashcat.png",
             ]
         }
       },
       {
-        title: "DoubtTopia (Flutter Version)",
-        description: "A real-time doubt resolution platform with live content updates and resource management.",
-        image: "https://source.unsplash.com/600x400/?learning,technology",
-        tags: ['Flutter', 'Dart', 'Firebase'],
-        details: {
-            challenge: "Providing a seamless and real-time platform for students to ask questions and educators to provide answers, along with sharing relevant study materials.",
-            solution: "Developed a cross-platform mobile application using Flutter and Dart, with Firebase Realtime Database for live content updates and Firestore for structured data storage (user profiles, resources). Implemented features like categorized doubts, threaded discussions, and push notifications.",
-            results: "Enabled live updates and interactive doubt resolution, improving student engagement and accessibility to educational support. Successfully deployed to beta testers.",
-            images: [
-            "https://source.unsplash.com/800x600/?education,app",
-            "https://source.unsplash.com/800x600/?students,discussion",
-            "https://source.unsplash.com/800x600/?mobile,ui"
-            ]
-        }
-      },
+  title: "DoubtTopia (Web Version)",
+  description: "A centralized online library for B.Tech students to access textbooks, reference materials, and curated resources across all semesters.",
+  image: "assets/Doubttopia_web_1.png",
+  tags: ['HTML', 'CSS', 'JavaScript', 'Web Deployment'],
+  details: {
+    challenge: "Creating a user-friendly platform that organizes a wide range of B.Tech books and resources across multiple branches and semesters, all in one place.",
+    solution: "Developed a fully responsive web application using HTML, CSS, and JavaScript. Integrated Firebase for hosting and structured storage of book metadata. Designed an intuitive UI with branch-wise and semester-wise filtering. Added support for PDF previews, downloads, and real-time updates to the library.",
+    results: "Successfully deployed a centralized B.Tech academic resource portal. Users can easily browse, search, and access important textbooks and study guides, reducing their dependency on physical books or scattered sources.",
+    images: [
+      "assets/Doubttopia_web_1.png",
+      "assets/Doubttopia_web_2.png",
+
+    ]
+  },
+  link: "https://doubttopia.sudarsan.net.in/"
+},
+
       {
         title: "DoubtTopia (Android Studio Version)",
         description: "An Android app for managing doubts, featuring document uploads and discussions.",
-        image: "https://source.unsplash.com/600x400/?education,discussion",
+        image: "assets/Doubtopia_android_1.png",
         tags: ['Android', 'Kotlin', 'Firebase'],
         details: {
             challenge: "Creating a native Android collaborative platform for students to resolve academic doubts and access shared study materials like PDFs.",
             solution: "Built an intuitive Android application using Kotlin and Android Jetpack components. Leveraged Firebase for backend services, including authentication, storage for PDF uploads, and Firestore for organizing doubts and discussions by semester and subject.",
             results: "Provided a structured and easily navigable platform for students to access study materials and participate in doubt-clearing sessions, improving collaborative learning.",
             images: [
-            "https://source.unsplash.com/800x600/?students,learning",
-            "https://source.unsplash.com/800x600/?pdf,documents",
-            "https://source.unsplash.com/800x600/?android,development"
+            
             ]
-        }
+            
+        },
+         link: "https://play.google.com/store/apps/details?id=com.sda.doubttopia&pcampaignid=web_share"
       },
-      {
-        title: "Automated Image Downloader & Excel Updater",
-        description: "Python script for bulk image downloads and Excel path updates for data management.",
-        image: "https://source.unsplash.com/600x400/?automation,data",
-        tags: ['Python', 'Automation', 'Excel'],
-        details: {
-            challenge: "Efficiently managing large-scale image downloads from URLs listed in an Excel sheet and then updating the sheet with local file paths for these images.",
-            solution: "Developed a Python script using libraries like `requests` for downloading images and `openpyxl` for reading from and writing to Excel files. Implemented error handling for broken links and file operations.",
-            results: "Successfully downloaded and organized over 13,000 images from provided URLs and updated the corresponding Excel sheet with their local paths, significantly saving manual effort and time.",
-            images: [
-            "https://source.unsplash.com/800x600/?code,automation",
-            "https://source.unsplash.com/800x600/?excel,data",
-            "https://source.unsplash.com/800x600/?files,scripting"
-            ]
-        }
-      },
-      {
-        title: "Tic-Tac-Toe AI",
-        description: "Reinforcement learning AI model for Tic-Tac-Toe, showing Q-table updates.",
-        image: "https://source.unsplash.com/600x400/?ai,games",
-        tags: ['Python', 'RL', 'AI'],
-        details: {
-            challenge: "Developing an AI agent that learns to play Tic-Tac-Toe optimally against a human or another AI through experience, without being explicitly programmed with game strategies.",
-            solution: "Used Q-learning, a model-free reinforcement learning algorithm. The AI agent explores different moves, receives rewards or penalties based on the game's outcome, and updates its Q-table, which estimates the value of taking an action in a given state.",
-            results: "Successfully demonstrated the principles of reinforcement learning. The AI agent, after sufficient training episodes, learned to play Tic-Tac-Toe effectively, often achieving draws or wins against non-optimal players.",
-            images: [
-            "https://source.unsplash.com/800x600/?tic-tac-toe,ai",
-            "https://source.unsplash.com/800x600/?q-learning,games",
-            "https://source.unsplash.com/800x600/?strategy,boardgame"
-            ]
-        }
-      }
+//      {
+//        title: "Automated Image Downloader & Excel Updater",
+//        description: "Python script for bulk image downloads and Excel path updates for data management.",
+//        image: "https://source.unsplash.com/600x400/?automation,data",
+//        tags: ['Python', 'Automation', 'Excel'],
+//        details: {
+//            challenge: "Efficiently managing large-scale image downloads from URLs listed in an Excel sheet and then updating the sheet with local file paths for these images.",
+//            solution: "Developed a Python script using libraries like `requests` for downloading images and `openpyxl` for reading from and writing to Excel files. Implemented error handling for broken links and file operations.",
+//            results: "Successfully downloaded and organized over 13,000 images from provided URLs and updated the corresponding Excel sheet with their local paths, significantly saving manual effort and time.",
+//            images: [
+//            "https://source.unsplash.com/800x600/?code,automation",
+//            "https://source.unsplash.com/800x600/?excel,data",
+//            "https://source.unsplash.com/800x600/?files,scripting"
+//            ]
+//        }
+//      },
+//      {
+//        title: "Tic-Tac-Toe AI",
+//        description: "Reinforcement learning AI model for Tic-Tac-Toe, showing Q-table updates.",
+//        image: "https://source.unsplash.com/600x400/?ai,games",
+//        tags: ['Python', 'RL', 'AI'],
+//        details: {
+//            challenge: "Developing an AI agent that learns to play Tic-Tac-Toe optimally against a human or another AI through experience, without being explicitly programmed with game strategies.",
+//            solution: "Used Q-learning, a model-free reinforcement learning algorithm. The AI agent explores different moves, receives rewards or penalties based on the game's outcome, and updates its Q-table, which estimates the value of taking an action in a given state.",
+//            results: "Successfully demonstrated the principles of reinforcement learning. The AI agent, after sufficient training episodes, learned to play Tic-Tac-Toe effectively, often achieving draws or wins against non-optimal players.",
+//            images: [
+//            "https://source.unsplash.com/800x600/?tic-tac-toe,ai",
+//            "https://source.unsplash.com/800x600/?q-learning,games",
+//            "https://source.unsplash.com/800x600/?strategy,boardgame"
+//            ]
+//        }
+//      }
   ];
 
 
@@ -514,9 +512,9 @@ function App() {
               <p className="text-gray-600">Turning ideas into elegant code & seamless experiences.</p>
             </div>
             <div className="flex justify-start md:justify-end space-x-6">
-              <FooterLink href="https://github.com/your-github-username" ariaLabel="GitHub Profile" icon={<Github size={24}/>} />
-              <FooterLink href="https://linkedin.com/in/your-linkedin-profile" ariaLabel="LinkedIn Profile" icon={<Linkedin size={24}/>} />
-              <FooterLink href="mailto:your.email@example.com" ariaLabel="Send Email" icon={<Mail size={24}/>} />
+              <FooterLink href="https://github.com/sudarsansda" ariaLabel="GitHub Profile" icon={<Github size={24}/>} />
+              <FooterLink href="https://linkedin.com/in/sudarsansda" ariaLabel="LinkedIn Profile" icon={<Linkedin size={24}/>} />
+              <FooterLink href="mailto:sudarsanjcr@example.com" ariaLabel="Send Email" icon={<Mail size={24}/>} />
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-600">
@@ -778,7 +776,7 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
                     whileTap={{ scale: 0.98 }}
                     className="inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-base font-semibold transition-colors duration-200 shadow-md hover:shadow-lg"
                   >
-                    View Project / Source <ExternalLink size={18} />
+                    View Project <ExternalLink size={18} />
                   </motion.a>
                 </div>
               )}
