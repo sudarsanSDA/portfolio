@@ -6,10 +6,10 @@ import {
   Code2,
   User,
   ChevronDown,
-  Globe,
+  Globe, 
   Mail,
   Github,
-  Linkedin,
+  Linkedin, 
   ExternalLink,
   Award,
   Cpu,
@@ -17,32 +17,27 @@ import {
   Menu, // Hamburger icon
   X,    // Close icon
   // Technical skill icons
-  Figma,
+  Figma, 
   FileCode2,
   Database,
   Server,
-  Cloud,
+  Cloud, 
   Layers,
   Palette,
   Smartphone,
   GitBranch,
-  Zap,
-  Network,
+  Zap, 
+  Network, 
   Terminal,
   Brain,
-  Code,
+  Code, 
   Shield,
   Bug,
   HardDrive,
   Wifi,
-  LucideWifiOff,
-  WifiOff,
   Key,
   Hash as HashIcon,
-  Tablets,
-  Phone,
   ArrowDownWideNarrow,
-  FacebookIcon
 } from 'lucide-react';
 
 // --- Type Definitions ---
@@ -78,11 +73,16 @@ interface ModalProjectData {
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
+  const { scrollY } = useScroll(); 
   const headerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
 
   const [selectedProject, setSelectedProject] = useState<ModalProjectData | null>(null);
+
+  // Contact Form State
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [submissionMessage, setSubmissionMessage] = useState('');
 
   // Effect to handle header background on scroll
   useEffect(() => {
@@ -128,23 +128,77 @@ function App() {
         } else {
           console.warn(`[handleMobileNavClick] Target element with id "${targetId}" not found for smooth scroll.`);
         }
-      }, 50);
+      }, 50); 
     }
   };
 
   // Modal open/close functions
   const openModal = (projectData: ModalProjectData) => {
     setSelectedProject(projectData);
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    document.body.style.overflow = 'hidden'; 
   };
 
   const closeModal = () => {
     setSelectedProject(null);
-    document.body.style.overflow = 'auto'; // Restore background scrolling
+    document.body.style.overflow = 'auto'; 
   };
 
-  // Dummy project data (replace with your actual data)
-  // assets/John_the_Ripper.png
+  // Contact Form Input Change Handler
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Contact Form Submission Handler
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmissionStatus('submitting');
+    setSubmissionMessage('');
+
+    // !!! IMPORTANT: Your Formspree endpoint is now here !!!
+    const formspreeEndpoint = 'https://formspree.io/f/xwpozakp'; 
+
+    // This check is still good practice, though less likely to be an issue now
+    if (formspreeEndpoint === 'YOUR_FORMSPREE_ENDPOINT' || !formspreeEndpoint.startsWith('https://formspree.io/f/')) {
+        console.error("Formspree endpoint is not configured correctly. Please verify the URL in the code.");
+        setSubmissionStatus('error');
+        setSubmissionMessage('Form submission configuration error. Please contact the site administrator.');
+        return;
+    }
+
+    try {
+      const response = await fetch(formspreeEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' 
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setSubmissionStatus('success');
+        setSubmissionMessage('Thank you! Your message has been sent successfully.');
+        setFormData({ name: '', email: '', message: '' }); // Reset form
+      } else {
+        const data = await response.json();
+        if (data.errors && data.errors.length > 0) {
+          setSubmissionMessage(data.errors.map((error: { message: string }) => error.message).join(', '));
+        } else if (data.error) { // Formspree often returns a single 'error' field for issues
+           setSubmissionMessage(data.error);
+        } else {
+          setSubmissionMessage('Oops! Something went wrong. Please try again.');
+        }
+        setSubmissionStatus('error');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmissionStatus('error');
+      setSubmissionMessage('An error occurred while sending your message. Please try again later.');
+    }
+  };
+
+
   const projectsData: ProjectCardData[] = [
     {
         title: "Hate Speech Detection using NLP",
@@ -155,9 +209,7 @@ function App() {
             challenge: "Ensuring online safety by detecting hate speech in text data. The rise of online platforms has also seen an increase in harmful content, making automated detection crucial.",
             solution: "Used Natural Language Processing (NLP) techniques and machine learning models (e.g., SVM, LSTM) to classify text. The model was trained on a diverse dataset of labeled text.",
             results: "Achieved high accuracy (e.g., 92%) in identifying various forms of hate speech, contributing to a significant reduction in toxic content on a simulated platform.",
-            images: [
-                
-            ]
+            images: []
         },
       },
       {
@@ -191,23 +243,21 @@ function App() {
         }
       },
       {
-  title: "DoubtTopia (Web Version)",
-  description: "A centralized online library for B.Tech students to access textbooks, reference materials, and curated resources across all semesters.",
-  image: "assets/Doubttopia_web_1.png",
-  tags: ['HTML', 'CSS', 'JavaScript', 'Web Deployment'],
-  details: {
-    challenge: "Creating a user-friendly platform that organizes a wide range of B.Tech books and resources across multiple branches and semesters, all in one place.",
-    solution: "Developed a fully responsive web application using HTML, CSS, and JavaScript. Integrated Firebase for hosting and structured storage of book metadata. Designed an intuitive UI with branch-wise and semester-wise filtering. Added support for PDF previews, downloads, and real-time updates to the library.",
-    results: "Successfully deployed a centralized B.Tech academic resource portal. Users can easily browse, search, and access important textbooks and study guides, reducing their dependency on physical books or scattered sources.",
-    images: [
-      "assets/Doubttopia_web_1.png",
-      "assets/Doubttopia_web_2.png",
-
-    ]
-  },
-  link: "https://doubttopia.sudarsan.net.in/"
-},
-
+        title: "DoubtTopia (Web Version)",
+        description: "A centralized online library for B.Tech students to access textbooks, reference materials, and curated resources across all semesters.",
+        image: "assets/Doubttopia_web_1.png",
+        tags: ['HTML', 'CSS', 'JavaScript', 'Web Deployment'],
+        details: {
+          challenge: "Creating a user-friendly platform that organizes a wide range of B.Tech books and resources across multiple branches and semesters, all in one place.",
+          solution: "Developed a fully responsive web application using HTML, CSS, and JavaScript. Integrated Firebase for hosting and structured storage of book metadata. Designed an intuitive UI with branch-wise and semester-wise filtering. Added support for PDF previews, downloads, and real-time updates to the library.",
+          results: "Successfully deployed a centralized B.Tech academic resource portal. Users can easily browse, search, and access important textbooks and study guides, reducing their dependency on physical books or scattered sources.",
+          images: [
+            "assets/Doubttopia_web_1.png",
+            "assets/Doubttopia_web_2.png",
+          ]
+        },
+        link: "https://doubttopia.sudarsan.net.in/"
+      },
       {
         title: "DoubtTopia (Android Studio Version)",
         description: "An Android app for managing doubts, featuring document uploads and discussions.",
@@ -217,45 +267,10 @@ function App() {
             challenge: "Creating a native Android collaborative platform for students to resolve academic doubts and access shared study materials like PDFs.",
             solution: "Built an intuitive Android application using Kotlin and Android Jetpack components. Leveraged Firebase for backend services, including authentication, storage for PDF uploads, and Firestore for organizing doubts and discussions by semester and subject.",
             results: "Provided a structured and easily navigable platform for students to access study materials and participate in doubt-clearing sessions, improving collaborative learning.",
-            images: [
-            
-            ]
-            
+            images: []
         },
          link: "https://play.google.com/store/apps/details?id=com.sda.doubttopia&pcampaignid=web_share"
       },
-//      {
-//        title: "Automated Image Downloader & Excel Updater",
-//        description: "Python script for bulk image downloads and Excel path updates for data management.",
-//        image: "https://source.unsplash.com/600x400/?automation,data",
-//        tags: ['Python', 'Automation', 'Excel'],
-//        details: {
-//            challenge: "Efficiently managing large-scale image downloads from URLs listed in an Excel sheet and then updating the sheet with local file paths for these images.",
-//            solution: "Developed a Python script using libraries like `requests` for downloading images and `openpyxl` for reading from and writing to Excel files. Implemented error handling for broken links and file operations.",
-//            results: "Successfully downloaded and organized over 13,000 images from provided URLs and updated the corresponding Excel sheet with their local paths, significantly saving manual effort and time.",
-//            images: [
-//            "https://source.unsplash.com/800x600/?code,automation",
-//            "https://source.unsplash.com/800x600/?excel,data",
-//            "https://source.unsplash.com/800x600/?files,scripting"
-//            ]
-//        }
-//      },
-//      {
-//        title: "Tic-Tac-Toe AI",
-//        description: "Reinforcement learning AI model for Tic-Tac-Toe, showing Q-table updates.",
-//        image: "https://source.unsplash.com/600x400/?ai,games",
-//        tags: ['Python', 'RL', 'AI'],
-//        details: {
-//            challenge: "Developing an AI agent that learns to play Tic-Tac-Toe optimally against a human or another AI through experience, without being explicitly programmed with game strategies.",
-//            solution: "Used Q-learning, a model-free reinforcement learning algorithm. The AI agent explores different moves, receives rewards or penalties based on the game's outcome, and updates its Q-table, which estimates the value of taking an action in a given state.",
-//            results: "Successfully demonstrated the principles of reinforcement learning. The AI agent, after sufficient training episodes, learned to play Tic-Tac-Toe effectively, often achieving draws or wins against non-optimal players.",
-//            images: [
-//            "https://source.unsplash.com/800x600/?tic-tac-toe,ai",
-//            "https://source.unsplash.com/800x600/?q-learning,games",
-//            "https://source.unsplash.com/800x600/?strategy,boardgame"
-//            ]
-//        }
-//      }
   ];
 
 
@@ -278,11 +293,11 @@ function App() {
               SDA
             </motion.a>
             <div className="hidden md:flex items-center space-x-8">
-              <NavLink href="#about">About</NavLink>
-              <NavLink href="#skills">Skills</NavLink>
-              <NavLink href="#projects">Projects</NavLink>
-              <NavLink href="#achievements">Achievements</NavLink>
-              <NavLink href="#contact">Contact</NavLink>
+              <NavLink href="#about" onClick={(e) => handleMobileNavClick(e, '#about')}>About</NavLink>
+              <NavLink href="#skills" onClick={(e) => handleMobileNavClick(e, '#skills')}>Skills</NavLink>
+              <NavLink href="#projects" onClick={(e) => handleMobileNavClick(e, '#projects')}>Projects</NavLink>
+              <NavLink href="#achievements" onClick={(e) => handleMobileNavClick(e, '#achievements')}>Achievements</NavLink>
+              <NavLink href="#contact" onClick={(e) => handleMobileNavClick(e, '#contact')}>Contact</NavLink>
             </div>
             <div className="md:hidden flex items-center">
               <button
@@ -337,7 +352,9 @@ function App() {
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-8"
         >
-          <ChevronDown size={32} className="text-gray-600" />
+          <a href="#about" onClick={(e) => handleMobileNavClick(e, '#about')} aria-label="Scroll to about section">
+            <ChevronDown size={32} className="text-gray-600" />
+          </a>
         </motion.div>
       </header>
 
@@ -476,27 +493,63 @@ function App() {
             </p>
             <div className="max-w-2xl mx-auto">
               <div className="p-8 rounded-2xl bg-white shadow-xl">
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleFormSubmit}>
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input type="text" id="name" name="name" required className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Your name"/>
+                    <input 
+                      type="text" 
+                      id="name" 
+                      name="name" 
+                      required 
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" 
+                      placeholder="Your name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      disabled={submissionStatus === 'submitting'}
+                    />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="email" name="email" required className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Your email"/>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      name="email" 
+                      required 
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" 
+                      placeholder="Your email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      disabled={submissionStatus === 'submitting'}
+                    />
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                    <textarea id="message" name="message" rows={5} required className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Your message"></textarea>
+                    <textarea 
+                      id="message" 
+                      name="message" 
+                      rows={5} 
+                      required 
+                      className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" 
+                      placeholder="Your message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      disabled={submissionStatus === 'submitting'}
+                    ></textarea>
                   </div>
                   <motion.button
-                    whileHover={{ scale: 1.02, filter: 'brightness(1.1)' }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow hover:shadow-md"
+                    whileHover={submissionStatus !== 'submitting' ? { scale: 1.02, filter: 'brightness(1.1)' } : {}}
+                    whileTap={submissionStatus !== 'submitting' ? { scale: 0.98 } : {}}
+                    className={`w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 shadow hover:shadow-md ${submissionStatus === 'submitting' ? 'opacity-50 cursor-not-allowed' : ''}`}
                     type="submit"
+                    disabled={submissionStatus === 'submitting'}
                   >
-                    Send Message <Send size={18} />
+                    {submissionStatus === 'submitting' ? 'Sending...' : <>Send Message <Send size={18} /></>}
                   </motion.button>
+                  {submissionMessage && (
+                    <p className={`mt-4 text-center text-sm ${submissionStatus === 'success' ? 'text-green-600' : submissionStatus === 'error' ? 'text-red-600' : 'text-gray-700'}`}>
+                      {submissionMessage}
+                    </p>
+                  )}
                 </form>
               </div>
             </div>
@@ -514,6 +567,7 @@ function App() {
             <div className="flex justify-start md:justify-end space-x-6">
               <FooterLink href="https://github.com/sudarsansda" ariaLabel="GitHub Profile" icon={<Github size={24}/>} />
               <FooterLink href="mailto:sudarsanjcr@gmail.com" ariaLabel="Send Email" icon={<Mail size={24}/>} />
+              {/* <FooterLink href="YOUR_LINKEDIN_URL" ariaLabel="LinkedIn Profile" icon={<Linkedin size={24}/>} /> */}
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-600">
@@ -522,7 +576,6 @@ function App() {
         </div>
       </footer>
 
-      {/* Project Detail Modal */}
       <ProjectDetailModal project={selectedProject} onClose={closeModal} />
 
     </div>
@@ -535,14 +588,27 @@ function NavLink({ href, children, isMobile = false, onClick }: {
   href: string;
   children: React.ReactNode;
   isMobile?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void; 
 }) {
   const mobileClasses = "block w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 text-left";
   const desktopClasses = "text-gray-700 hover:text-blue-600 transition-colors px-1 font-medium relative group";
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
-      onClick(event);
+      onClick(event); 
+    } else if (href.startsWith('#')) { 
+      event.preventDefault();
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        const navHeight = (document.querySelector('nav')?.offsetHeight || 64) + 20; 
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
     }
   };
 
@@ -595,7 +661,6 @@ function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string })
   );
 }
 
-// --- PopupProjectCard Component ---
 interface PopupProjectCardProps extends ProjectCardData {
   onCardClick: (modalData: ModalProjectData) => void;
 }
@@ -648,13 +713,11 @@ function PopupProjectCard({
             ))}
           </div>
         </div>
-        {/* You can add a "View Details" button here if desired, or rely on the whole card click */}
       </motion.div>
     </motion.div>
   );
 }
 
-// --- ProjectDetailModal Component ---
 interface ProjectDetailModalProps {
   project: ModalProjectData | null;
   onClose: () => void;
@@ -684,7 +747,7 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
       {project && (
         <motion.div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto"
-          onClick={onClose} // Close on overlay click
+          onClick={onClose} 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -692,13 +755,12 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
         >
           <motion.div
             className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[95vh] overflow-y-auto relative"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+            onClick={(e) => e.stopPropagation()} 
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 200, duration: 0.3 }}
           >
-            {/* Close button */}
             <button
               onClick={onClose}
               className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-gray-700 transition-colors z-20 bg-white/50 hover:bg-gray-100 rounded-full p-1.5"
@@ -707,13 +769,11 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
               <X size={24} />
             </button>
 
-            {/* Main Image */}
             <div className="w-full h-56 md:h-72 overflow-hidden rounded-t-xl">
                 <img src={project.mainImage} alt={project.title} className="w-full h-full object-cover" />
             </div>
 
             <div className="p-6 md:p-8 space-y-6">
-              {/* Header: Title and Tags */}
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">{project.title}</h2>
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -725,7 +785,6 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
                 </div>
               </div>
 
-              {/* Content Sections */}
               <div className="prose prose-sm sm:prose-base max-w-none text-gray-700">
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800 mb-1 !mt-0">The Challenge:</h4>
@@ -741,7 +800,6 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
                 </div>
               </div>
 
-              {/* Gallery */}
               {project.galleryImages && project.galleryImages.length > 0 && (
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800 mb-3">Gallery:</h4>
@@ -764,7 +822,6 @@ function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
                 </div>
               )}
 
-              {/* Live Link Button */}
               {project.liveLink && (
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <motion.a
