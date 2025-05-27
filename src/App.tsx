@@ -200,48 +200,29 @@ function App() {
 
 
   const projectsData: ProjectCardData[] = [
-    {
-        title: "Hate Speech Detection using NLP",
-        description: "An AI-powered system that identifies and filters harmful language in text, ensuring safer online interactions.",
-        image: "assets/Hate_speach_header.png",
-        tags: ['Python', 'NLP', 'ML'],
-        details: {
-            challenge: "Ensuring online safety by detecting hate speech in text data. The rise of online platforms has also seen an increase in harmful content, making automated detection crucial.",
-            solution: "Used Natural Language Processing (NLP) techniques and machine learning models (e.g., SVM, LSTM) to classify text. The model was trained on a diverse dataset of labeled text.",
-            results: "Achieved high accuracy (e.g., 92%) in identifying various forms of hate speech, contributing to a significant reduction in toxic content on a simulated platform.",
-            images: []
-        },
-      },
-      {
-        title: "Handwriting Recognition System",
-        description: "An AI-powered model that recognizes and digitizes handwritten text, useful for document automation.",
-        image: "assets/Hand_writing.png",
-        tags: ['Python', 'Neural Networks', 'OpenCV'],
-        details: {
-            challenge: "Automating the tedious process of transcribing handwritten documents into digital text, especially for archival purposes or data entry.",
-            solution: "Developed a Convolutional Neural Network (CNN) combined with a Recurrent Neural Network (RNN) for sequence recognition. Preprocessing steps included noise reduction and character segmentation.",
-            results: "Successfully built a neural network that can accurately recognize and convert handwritten English text with a character error rate below 10% on test datasets.",
-            images: [
-                "assets/Hand_writing1.png",
-                "assets/Hand_writings.png",
-            ]
-        }
-      },
-      {
-        title: "Brute-Force ZIP Password Cracker",
-        description: "A Python script to crack ZIP file passwords using brute-force techniques with GPU acceleration.",
-        image: "assets/John_the_Ripper.png",
-        tags: ['Python', 'Cybersecurity', 'GPU'],
-        details: {
-            challenge: "Recovering lost passwords for encrypted ZIP files when other recovery methods fail. The main challenge is the computational time required for brute-force attacks.",
-            solution: "Implemented a custom multi-threaded Python script that systematically tries password combinations. Explored using CUDA for GPU acceleration to significantly speed up the process for certain hash types (though ZIP's default encryption is CPU-bound).",
-            results: "Successfully cracked passwords for ZIP files with simple to moderately complex passwords within a reasonable timeframe. Demonstrated the importance of strong, unique passwords.",
-            images: [
-              "assets/John.png",
-              "assets/hashcat.png",
-            ]
-        }
-      },
+   {
+  title: "Computer Based Test Web Application",
+  description: "A pure Node.js-based web application for conducting computer-based exams with SQL-backed data handling.",
+  image: "assets/cbt1.png",
+  tags: ['Node.js', 'JavaScript', 'SQL', 'HTML/CSS'],
+  details: {
+    challenge: "Creating a computer-based testing platform using raw Node.js without frameworks like Express, while managing routing, sessions, and SQL database interactions manually.",
+    solution: "Built the app using Node.js core modules with custom routing and logic in JavaScript. Integrated SQL database to manage users, questions, results, and admin functions. Used HTML, CSS, and client-side JS for the frontend.",
+    results: "Delivered a lightweight CBT (Computer-Based Testing) platform with minimal dependencies, enabling secure user login, real-time evaluation, and result tracking — successfully scaled to support and evaluate over 4,500 candidates.",
+    images: [
+      "assets/cbtmain.png",
+      "assets/cbt2.png",
+      "assets/cbt3.png",
+      "assets/cbt4.png",
+      
+    ]
+  },
+
+},
+
+
+    
+      
       {
         title: "DoubtTopia (Web Version)",
         description: "A centralized online library for B.Tech students to access textbooks, reference materials, and curated resources across all semesters.",
@@ -270,6 +251,48 @@ function App() {
             images: []
         },
          link: "https://play.google.com/store/apps/details?id=com.sda.doubttopia&pcampaignid=web_share"
+      },
+      {
+        title: "Brute-Force ZIP Password Cracker",
+        description: "A Python script to crack ZIP file passwords using brute-force techniques with GPU acceleration.",
+        image: "assets/John_the_Ripper.png",
+        tags: ['Python', 'Cybersecurity', 'GPU'],
+        details: {
+            challenge: "Recovering lost passwords for encrypted ZIP files when other recovery methods fail. The main challenge is the computational time required for brute-force attacks.",
+            solution: "Implemented a custom multi-threaded Python script that systematically tries password combinations. Explored using CUDA for GPU acceleration to significantly speed up the process for certain hash types (though ZIP's default encryption is CPU-bound).",
+            results: "Successfully cracked passwords for ZIP files with simple to moderately complex passwords within a reasonable timeframe. Demonstrated the importance of strong, unique passwords.",
+            images: [
+              "assets/John.png",
+              "assets/hashcat.png",
+            ]
+        }
+      },
+      {
+        title: "Hate Speech Detection using NLP",
+        description: "An AI-powered system that identifies and filters harmful language in text, ensuring safer online interactions.",
+        image: "assets/Hate_speach_header.png",
+        tags: ['Python', 'NLP', 'ML'],
+        details: {
+            challenge: "Ensuring online safety by detecting hate speech in text data. The rise of online platforms has also seen an increase in harmful content, making automated detection crucial.",
+            solution: "Used Natural Language Processing (NLP) techniques and machine learning models (e.g., SVM, LSTM) to classify text. The model was trained on a diverse dataset of labeled text.",
+            results: "Achieved high accuracy (e.g., 92%) in identifying various forms of hate speech, contributing to a significant reduction in toxic content on a simulated platform.",
+            images: []
+        },
+      },
+      {
+        title: "Handwriting Recognition System",
+        description: "An AI-powered model that recognizes and digitizes handwritten text, useful for document automation.",
+        image: "assets/Hand_writing.png",
+        tags: ['Python', 'Neural Networks', 'OpenCV'],
+        details: {
+            challenge: "Automating the tedious process of transcribing handwritten documents into digital text, especially for archival purposes or data entry.",
+            solution: "Developed a Convolutional Neural Network (CNN) combined with a Recurrent Neural Network (RNN) for sequence recognition. Preprocessing steps included noise reduction and character segmentation.",
+            results: "Successfully built a neural network that can accurately recognize and convert handwritten English text with a character error rate below 10% on test datasets.",
+            images: [
+                "assets/Hand_writing1.png",
+                "assets/Hand_writings.png",
+            ]
+        }
       },
   ];
 
@@ -369,54 +392,66 @@ function App() {
                 className="prose prose-lg lg:prose-xl max-w-4xl mx-auto text-gray-700"
             >
                 <p>
-                    Hello! I'm P Sudarsan, a passionate developer currently pursuing a B.Tech in Artificial Intelligence & Data Science. I thrive on transforming complex ideas into practical, elegant solutions through code. My journey in tech has equipped me with a diverse skill set, spanning from mobile development with Flutter and Android (Kotlin) to backend logic with Python and PHP.
-                </p>
-                <p>
-                    I have a keen interest in the cutting edge of technology, particularly in AI and Neural Networks, where I enjoy building models like handwriting recognition systems and NLP tools for hate speech detection. My curiosity also extends to cybersecurity, exploring tools like Kali Linux and techniques like password cracking to understand system vulnerabilities better.
-                </p>
-                <p>
-                    Beyond software, I'm comfortable with hardware management and OS installations, giving me a holistic view of computing systems. I'm a strong believer in continuous learning, as demonstrated by my NPTEL Star recognition and certifications from Harvard's CS50 and Google AI. My goal is to leverage technology to create seamless, impactful user experiences and solve real-world problems. Let's build something amazing together!
-                </p>
+  I’m P. Sudarsan, a B.Tech student specializing in AI & Data Science, with a strong foundation in software development and a focus on delivering smart, scalable solutions. I develop full-stack web and mobile applications, as well as AI-powered systems that solve real-world problems.
+</p>
+<p>
+  My technical interests include machine learning, neural networks, and natural language processing. I’ve built projects like handwriting recognition tools and hate speech detection systems using Python and TensorFlow. I also develop secure and efficient web applications using modern frameworks such as Flask, Node.js, and React.
+</p>
+<p>
+  I actively freelance on Fiverr, delivering customized solutions to clients worldwide — from Android and web apps to automation tools and AI integrations. My certifications from Harvard’s CS50, Google AI, and NPTEL reflect my commitment to continuous learning and staying ahead in the tech space.
+</p>
+<p>
+  I'm driven by the goal of creating clean, impactful digital experiences, whether it's through a well-designed frontend or an optimized ML model. I'm always open to opportunities where I can contribute, grow, and build technology that matters.
+</p>
+
             </motion.div>
         </div>
       </section>
 
-      <section id="skills" className="py-32 bg-gray-50 text-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle icon={<Cpu />} title="Technical Skills" />
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mb-6 text-gray-800">Programming & Development</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
-            <SkillIcon icon={<FileCode2 size={32} />} name="Flutter & Dart" />
-            <SkillIcon icon={<ArrowDownWideNarrow size={32} />} name="Android (Kotlin)" />
-            <SkillIcon icon={<Layers size={32} />} name="Python" />
-            <SkillIcon icon={<Palette size={32} />} name="PHP" />
-            <SkillIcon icon={<Smartphone size={32} />} name="HTML, CSS, JS" />
-          </div>
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">AI & Neural Networks</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
-            <SkillIcon icon={<Brain size={32} />} name="Neural Networking (Intermediate)" />
-          </div>
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Cybersecurity & Ethical Hacking</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
-            <SkillIcon icon={<Shield size={32} />} name="Kali Linux" />
-            <SkillIcon icon={<HashIcon size={32} />} name="John the Ripper" />
-            <SkillIcon icon={<Terminal size={32} />} name="Termux" />
-            <SkillIcon icon={<Key size={32} />} name="Password Cracking" />
-            <SkillIcon icon={<Wifi size={32} />} name="WiFi Cracking" />
-          </div>
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Hardware & OS Management</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
-            <SkillIcon icon={<HardDrive size={32} />} name="Hardware Management" />
-            <SkillIcon icon={<Server size={32} />} name="OS Installations" />
-          </div>
-          <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Other Technical Skills</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            <SkillIcon icon={<GitBranch size={32} />} name="Git & GitHub" />
-            <SkillIcon icon={<Database size={32} />} name="File Automation (Python)" />
-            <SkillIcon icon={<Bug size={32} />} name="Extreme Problem Diagnosis" />
-          </div>
-        </div>
-      </section>
+     <section id="skills" className="py-32 bg-gray-50 text-gray-900">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionTitle icon={<Cpu />} title="Technical Skills" />
+
+    {/* Web & Mobile Development */}
+    <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mb-6 text-gray-800">Web & Mobile Development</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
+      <SkillIcon icon={<FileCode2 size={32} />} name="Flutter & Dart" />
+      <SkillIcon icon={<ArrowDownWideNarrow size={32} />} name="Android (Kotlin, Jetpack)" />
+      <SkillIcon icon={<Smartphone size={32} />} name="HTML, CSS, JavaScript" />
+      <SkillIcon icon={<Palette size={32} />} name="PHP & MySQL" />
+      <SkillIcon icon={<Layers size={32} />} name="React (Basics)" />
+    </div>
+
+    {/* AI & Machine Learning */}
+    <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">AI & Machine Learning</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
+      <SkillIcon icon={<Brain size={32} />} name="Neural Networks (Intermediate)" />
+      <SkillIcon icon={<Brain size={32} />} name="NLP – Hate Speech Detection" />
+      <SkillIcon icon={<Brain size={32} />} name="Computer Vision – Handwriting Recognition" />
+      <SkillIcon icon={<Layers size={32} />} name="TensorFlow & Scikit-learn" />
+      <SkillIcon icon={<Database size={32} />} name="Model Deployment (TFLite)" />
+    </div>
+
+    {/* System & DevOps */}
+    <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">System Skills & DevOps</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
+      <SkillIcon icon={<Server size={32} />} name="Linux & OS Installations" />
+      <SkillIcon icon={<Terminal size={32} />} name="Bash & Terminal Environments" />
+      <SkillIcon icon={<HardDrive size={32} />} name="Hardware Management" />
+      <SkillIcon icon={<GitBranch size={32} />} name="Git & GitHub (Advanced)" />
+      <SkillIcon icon={<Cpu size={32} />} name="Docker (Basics)" />
+    </div>
+
+    {/* Tools & Utilities */}
+    <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">Tools & Automation</h3>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
+      <SkillIcon icon={<Bug size={32} />} name="Debugging & Optimization" />
+      <SkillIcon icon={<Database size={32} />} name="Python File & Data Automation" />
+      <SkillIcon icon={<Terminal size={32} />} name="Termux & Custom Android Environments" />
+    </div>
+  </div>
+</section>
+
 
       <section id="projects" className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -562,7 +597,7 @@ function App() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">P Sudarsan</h3>
-              <p className="text-gray-600">Turning ideas into elegant code & seamless experiences.</p>
+              <p className="text-gray-600">Jack of all trades, master of none, but oftentimes better than master of one.</p>
             </div>
             <div className="flex justify-start md:justify-end space-x-6">
               <FooterLink href="https://github.com/sudarsansda" ariaLabel="GitHub Profile" icon={<Github size={24}/>} />
