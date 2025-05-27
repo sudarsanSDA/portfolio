@@ -36,8 +36,10 @@ import {
   HardDrive,
   Wifi,
   Key,
+  GlobeLock,
   Hash as HashIcon,
   ArrowDownWideNarrow,
+  ActivitySquare,
 } from 'lucide-react';
 
 // --- Type Definitions ---
@@ -159,7 +161,7 @@ function App() {
     const formspreeEndpoint = 'https://formspree.io/f/xwpozakp'; 
 
     // This check is still good practice, though less likely to be an issue now
-    if (formspreeEndpoint === 'YOUR_FORMSPREE_ENDPOINT' || !formspreeEndpoint.startsWith('https://formspree.io/f/')) {
+    if (!formspreeEndpoint.startsWith('https://formspree.io/f/')) {
         console.error("Formspree endpoint is not configured correctly. Please verify the URL in the code.");
         setSubmissionStatus('error');
         setSubmissionMessage('Form submission configuration error. Please contact the site administrator.');
@@ -449,6 +451,16 @@ function App() {
       <SkillIcon icon={<Database size={32} />} name="Python File & Data Automation" />
       <SkillIcon icon={<Terminal size={32} />} name="Termux & Custom Android Environments" />
     </div>
+    <h3 className="text-xl font-semibold border-b-2 border-gray-300 pb-2 mt-10 mb-6 text-gray-800">
+  Security & System Fundamentals
+</h3>
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-10">
+  <SkillIcon icon={<Shield size={32} />} name="Kali Linux (Familiar)" />
+  <SkillIcon icon={<Terminal size={32} />} name="Linux Networking Tools" />
+  <SkillIcon icon={<ActivitySquare size={32} />} name="System Vulnerability Analysis" />
+  <SkillIcon icon={<Bug size={32} />} name="Basic Security Scripting" />
+  <SkillIcon icon={<GlobeLock size={32} />} name="Secure Shell & Network Protocols" />
+</div>
   </div>
 </section>
 
