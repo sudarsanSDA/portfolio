@@ -614,7 +614,7 @@ function App() {
             <div className="flex justify-start md:justify-end space-x-6">
               <FooterLink href="https://github.com/sudarsansda" ariaLabel="GitHub Profile" icon={<Github size={24}/>} />
               <FooterLink href="mailto:sudarsanjcr@gmail.com" ariaLabel="Send Email" icon={<Mail size={24}/>} />
-              {/* <FooterLink href="YOUR_LINKEDIN_URL" ariaLabel="LinkedIn Profile" icon={<Linkedin size={24}/>} /> */}
+              <FooterLink href="https://linkedin.com/in/psudarsan" ariaLabel="LinkedIn Profile" icon={<Linkedin size={24}/>} />
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-200 text-center text-gray-600">
